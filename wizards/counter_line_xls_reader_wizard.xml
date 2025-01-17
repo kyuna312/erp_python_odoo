@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="counter_line_xls_reader_form" model="ir.ui.view">
+            <field name="name">counter.line.xls.reader.form</field>
+            <field name="model">counter.line.xls.reader</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="file" string="Файл оруулах"/>
+                        <field name="group_id" invisible="1" options="{'no_create': True}"/>
+                        <h3>Санамж</h3>
+                        <p>Excel файлын оруулахдаа доорх загварын дагуу файлын форматыг бэлдэж оруулна </p>
+                        <b><i>(Тоолуурын заалтын мөр дээрх <u>Дэлгэрэнгүй харах</u> товч дээр дарж мөрүүдийг идэвхжүүлснээрээ файлын загвараа татаж авна уу!!)</i></b>
+                        <div class="o_list_view mt-3">
+                            <table class="o_list_table" >
+                                <thead>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> ID </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Хэрэглэгчийн код </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Байрны код </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Тоот </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Эзэмшигч </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Тоолуурын нэр </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Тоолуурын дугаар </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Тоолуурын № </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Эхний заалт </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Эцсийн заалт </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Зөрүү </th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;"> Задгай </th>
+
+                                </thead>
+                            </table>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button string="Файл илгээх" name="upload_file" type="object" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_counter_line_xls_reader" model="ir.actions.act_window">
+            <field name="name">Дулааны тоолуур тоолуур</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">counter.line.xls.reader</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

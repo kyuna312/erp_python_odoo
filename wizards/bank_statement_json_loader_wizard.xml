@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="account_bank_statement_import_inherit_form" model="ir.ui.view">
+            <field name="name">account.bank.statement.import.inherit.form</field>
+            <field name="model">account.bank.statement.import</field>
+            <field name="inherit_id" ref="om_account_bank_statement_import.om_account_bank_statement_import_view" />
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='statement_bank']" position="after">
+                     <field name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                 </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

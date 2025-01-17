@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="pay_bank_statement_reconciliation_widget">
+        <div>
+            <ul class="list-group">
+                <t t-if="statement_line_list">
+                    <li class="list-group-item" t-foreach="statement_line_list" t-as="line">
+                        <div  t-att-class="'statement_line_'+line.id">
+                            <span class="badge badge-pill o_field_badge o_field_widget bg-danger-light">
+                                <t t-esc="line.amount"/>
+                            </span><br/>
+                            <span><t t-esc="line.payment_ref"/></span>
+                        </div>
+                    </li>
+                </t>
+            </ul>
+
+        </div>
+   </t>
+</templates>

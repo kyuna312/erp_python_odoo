@@ -1,0 +1,234 @@
+<odoo>
+  <template id="template_pay_uoo_detail">
+    <t t-call="web.basic_layout">
+      <style>
+        @page {
+        size: A4 landscape !important;
+        margin: 20mm !important;
+        }
+        .page, .header, .footer {
+        font-family: Arial, sans-serif !important;
+        font-size: 12px !important;
+        }
+        .dotted-line {
+        border-bottom: 1px dotted black !important;
+        display: inline-block !important;
+        width: 150px !important;
+        margin-left: 150px !important;
+        }
+        .content { margin: 10px; }
+        .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10px;
+        }
+        .table th, .table td {
+        padding: 5px;
+        border: 1px solid #ddd;
+        word-wrap: break-word;
+        }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .inspector-row { background-color: #f5f5f5; }
+        .spacing-row { height: 40px; border-left: none !important; border-right: none !important; }
+        .no-border { border: none !important; }
+      </style>
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-2">
+          <div class="col-4 d-flex justify-content-start">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" class="logo" style="width: 100px; height: auto;"/>
+            </t>
+          </div>
+          <div class="col-8 d-flex justify-content-end">
+            <p class="mb-0 fw-bold" style="font-size: 13px;">
+              <t t-esc="company_name"/>-ын
+              <t t-esc="uoo_year"/>
+              оны
+              <t t-esc="uoo_month"/>
+              сарын УУО Дансны Дэлгэрэнгүй Мэдээлэл
+            </p>
+          </div>
+        </div>
+        <div class="row pb-2 align-items-center">
+          <div class="col-4">
+            <p class="mb-0" style="font-size: 13px;">Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+          </div>
+          <div class="col-8 text-end">
+            <p class="mb-0" style="font-size: 13px;">Тайлан гаргасан:
+              <t t-esc="current_date"/>
+            </p>
+          </div>
+        </div>
+        <div>
+          <table class="table table-bordered table-sm">
+            <thead class="inspector-row">
+              <tr>
+                <th>Код</th>
+                <th>Байр, тоот</th>
+                <th>Хэрэглэгчийн нэр</th>
+                <th>Эхний үлдэгдэл</th>
+                <th>Тухайн сарын төлбөл зохихоос хаагдсан</th>
+                <th>Тухайн сарын УОО</th>
+                <th>Эцсийн үлдэгдэл</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Initialize total variables -->
+              <t t-set="total_prev_balance" t-value="0"/>
+              <t t-set="total_reconciled_current_invoice_amount" t-value="0"/>
+              <t t-set="total_current_balance" t-value="0"/>
+              <t t-set="total_last_balance" t-value="0"/>
+
+              <!-- Initialize inspector total variables -->
+              <t t-set="inspector_total_prev_balance" t-value="0"/>
+              <t t-set="inspector_total_reconciled_current_invoice_amount" t-value="0"/>
+              <t t-set="inspector_total_current_balance" t-value="0"/>
+              <t t-set="inspector_total_last_balance" t-value="0"/>
+
+              <!-- Initialize variables to track changes -->
+              <t t-set="previous_inspector_name" t-value="None"/>
+              <t t-set="uoo_length" t-value="len(uoo_results)"/>
+
+              <!-- Iterate through the data -->
+              <t t-foreach="uoo_results" t-as="data">
+                <!-- Check if inspector_name has changed -->
+                <t t-if="previous_inspector_name != data.get('inspector_name')">
+                  <!-- If previous inspector exists, render inspector totals -->
+                  <t t-if="previous_inspector_name != 'None' and inspector_total_prev_balance + inspector_total_reconciled_current_invoice_amount + inspector_total_current_balance + inspector_total_last_balance > 0">
+                    <tr class="inspector-row">
+                      <th colspan="3">Нийт (Байцаагч:<t t-esc="previous_inspector_name"/>)
+                      </th>
+                      <th class="text-end">
+                        <t t-esc="(inspector_total_prev_balance or 0.0) * -1"
+                           t-options="{'widget': 'float', 'precision': 2}"/>
+                      </th>
+                      <th class="text-end">
+                        <t t-esc="inspector_total_reconciled_current_invoice_amount or 0.0"
+                           t-options="{'widget': 'float', 'precision': 2}"/>
+                      </th>
+                      <th class="text-end">
+                        <t t-esc="(inspector_total_current_balance or 0.0) * -1"
+                           t-options="{'widget': 'float', 'precision': 2}"/>
+                      </th>
+                      <th class="text-end">
+                        <t t-esc="(inspector_total_last_balance or 0.0) * -1"
+                           t-options="{'widget': 'float', 'precision': 2}"/>
+                      </th>
+                    </tr>
+                    <!-- Add a spacing row if totals are displayed -->
+                    <tr class="spacing-row no-border">
+                      <td colspan="7">
+                        <span/>
+                      </td>
+                    </tr>
+                  </t>
+                  <!-- Reset inspector totals -->
+                  <t t-set="inspector_total_prev_balance" t-value="0"/>
+                  <t t-set="inspector_total_reconciled_current_invoice_amount" t-value="0"/>
+                  <t t-set="inspector_total_current_balance" t-value="0"/>
+                  <t t-set="inspector_total_last_balance" t-value="0"/>
+                  <!-- Render inspector name row -->
+                  <tr class="inspector-row">
+                    <th colspan="7" class="text-start">
+                      <span>Байцаагч:</span>
+                      <t t-esc="data.get('inspector_name')"/>
+                      <!-- Update previous_inspector_name for the next rows -->
+                      <t t-set="previous_inspector_name" t-value="data.get('inspector_name')"/>
+                    </th>
+                  </tr>
+                </t>
+                <!-- Accumulate totals for the inspector -->
+                <t t-set="inspector_total_prev_balance"
+                   t-value="inspector_total_prev_balance + (data.get('prev_balance') or 0)"/>
+                <t t-set="inspector_total_reconciled_current_invoice_amount"
+                   t-value="inspector_total_reconciled_current_invoice_amount + (data.get('reconciled_current_invoice_amount') or 0)"/>
+                <t t-set="inspector_total_current_balance"
+                   t-value="inspector_total_current_balance + (data.get('current_balance') or 0)"/>
+                <t t-set="inspector_total_last_balance"
+                   t-value="inspector_total_last_balance + (data.get('last_balance') or 0)"/>
+                <!-- Accumulate overall totals -->
+                <t t-set="total_prev_balance" t-value="total_prev_balance + (data.get('prev_balance') or 0)"/>
+                <t t-set="total_reconciled_current_invoice_amount"
+                   t-value="total_reconciled_current_invoice_amount + (data.get('reconciled_current_invoice_amount') or 0)"/>
+                <t t-set="total_current_balance" t-value="total_current_balance + (data.get('current_balance') or 0)"/>
+                <t t-set="total_last_balance" t-value="total_last_balance + (data.get('last_balance') or 0)"/>
+                <!-- Render data row -->
+                <tr>
+                  <th class="text-start" style="font-weight: normal;">
+                    <t t-esc="data.get('address_code')"/>
+                  </th>
+                  <th class="text-start" style="font-weight: normal;">
+                    <t t-esc="data.get('address_address')"/>
+                  </th>
+                  <th class="text-start" style="font-weight: normal;">
+                    <t t-esc="data.get('user_name')"/>
+                  </th>
+                  <th class="text-end" style="font-weight: normal;">
+                    <t t-esc="data.get('prev_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end" style="font-weight: normal;">
+                    <t t-esc="data.get('reconciled_current_invoice_amount')"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end" style="font-weight: normal;">
+                    <t t-esc="data.get('current_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end" style="font-weight: normal;">
+                    <t t-esc="data.get('last_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                </tr>
+              </t>
+              <!-- Final total for the last inspector -->
+              <t t-if="uoo_length > 0 and inspector_total_prev_balance + inspector_total_reconciled_current_invoice_amount + inspector_total_current_balance + inspector_total_last_balance > 0">
+                <tr class="inspector-row">
+                  <th colspan="3">Нийт (Байцаагч:<t t-esc="previous_inspector_name"/>)
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="(inspector_total_prev_balance or 0.0) * -1"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="inspector_total_reconciled_current_invoice_amount or 0.0"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="(inspector_total_current_balance or 0.0) * -1"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="(inspector_total_last_balance or 0.0) * -1"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                </tr>
+              </t>
+              <!-- Overall totals -->
+              <t t-if="total_prev_balance + total_reconciled_current_invoice_amount + total_current_balance + total_last_balance > 0">
+                <tr class="inspector-row">
+                  <th colspan="3">Нийт</th>
+                  <th class="text-end">
+                    <t t-esc="(total_prev_balance or 0.0) * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="total_reconciled_current_invoice_amount or 0.0"
+                       t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="(total_current_balance or 0.0) * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                  <th class="text-end">
+                    <t t-esc="(total_last_balance or 0.0) * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </th>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>

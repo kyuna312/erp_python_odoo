@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="central_heating_station_allocation_wizard_form" model="ir.ui.view">
+            <field name="name">central.heating.station.allocation.wizard.form</field>
+            <field name="model">central.heating.station.allocation.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="type"/>
+                                <field name="apartment_id"/>
+                            </group>
+                            <group>
+                                <field name="station_id"/>
+                                <field name="address_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="allocate" type="object" string="Хуваарилах" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_central_heating_station_allocation_wizard" model="ir.actions.act_window">
+            <field name="name">ЦТП хуваарилах</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">central.heating.station.allocation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

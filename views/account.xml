@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!--   Конторын банкны хуулга     -->
+    <record id="view_pay_bank_statement_form" model="ir.ui.view">
+      <field name="name">pay.bank.statement.form</field>
+      <field name="model">pay.bank.statement</field>
+      <field name="arch" type="xml">
+        <form string="Банкны хуулга">
+          <header>
+            <button name="import_file" type="object" string="Файлаас унших" states="draft"/>
+            <button name="confirm" type="object" string="Батлах" class="btn-primary" states="draft"/>
+            <button name="reconcile_all_payments" type="object" string="Бүх мөрийг Төлбөрт бүртгэх"
+                    states="confirmed,done" class="btn-primary"/>
+            <!--                        <button name="confirm" type="object" string="Батлах" class="btn-primary" states="draft,done"/>-->
+            <!--                        <button name="finish" type="object" string="Дуусгах" class="btn-primary" states="confirmed"/>-->
+            <button name="create_payment" type="object" string="Төлөлт үүсгэх" class="btn-primary"
+                    states="confirmed"/>
+            <button name="show_payment_list" type="object"
+                    string="Үүссэн төлбөрүүд" class="btn-primary"
+                    icon="fa-eye"
+                    states="confirmed,done"
+            />
+            <button name="reconcile" type="object" string="Reconcile" class="btn-primary"
+                    groups="base.group_system"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <field name="process" widget="progressbar"/>
+            <group>
+              <group>
+<!--                <field name="name" attrs="{'readonly': [('state', '=', 'done')]}"/>-->
+<!--                <field name="date" attrs="{'readonly': [('state', '=', 'done')]}"/>-->
+                <field name="name"/>
+                <field name="date"/>
+              </group>
+              <group>
+                <field name="company_id" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                <field name="statement_file_type" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                <field name="account_id" attrs="{'readonly': [('state', '=', 'done')]}"
+                       domain="[('type', '=', 'incoming')]"/>
+                <field name="file"
+                       attrs="{'invisible': [('statement_file_type', '=', False)], 'readonly': [('state', '=', 'done')]}"/>
+                <field name="total_income_amount"/>
+                <field name="total_outgoing_amount"/>
+                <div>
+                  <field name="user_access_type" nolabel="1"/>-д
+                  <field name="created_payment_sum"/>
+                  дүнтэй төлбөр бүртгэгдсэн
+                </div>
+              </group>
+            </group>
+            <button name="find_address" string="Боломжит тоотыг оруулах" class="btn-primary"
+                    type="object"/>
+            <notebook>
+              <page string="Мөр">
+                <field name="line_ids_by_address_type">
+                  <tree editable="bottom" delete="0" decoration-danger="duplicated==True" export_xlsx="false">
+                    <field name="address_id"/>
+                    <field name="address_type"/>
+                    <field name="payment_ref"/>
+                    <field name="ref" optional="hide"/>
+                    <field name="ccode" optional="hide"/>
+                    <field name="datetime"/>
+                    <field name="amount"/>
+                    <field name="state" optional="hide"/>
+                    <button name="action_create_payment" type="object"
+                            string="Төлбөр гараар бүртгэх"
+                            attrs="{'invisible': [('state', 'not in', ('confirmed','done'))]}"
+                            class="btn-primary"/>
+                    <field name="payment_id"/>
+                    <field name="duplicated" invisible="1"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Бүх мөр">
+                <field name="line_ids" widget="section_and_note_one2many">
+                  <tree editable="bottom" delete="0" decoration-danger="duplicated==True" export_xlsx="false">
+                    <field name="address_id"/>
+                    <field name="address_type"/>
+                    <field name="payment_ref"/>
+                    <field name="ref" optional="hide"/>
+                    <field name="ccode" optional="hide"/>
+                    <field name="datetime"/>
+                    <field name="amount"/>
+                    <field name="state" optional="hide"/>
+                    <button name="action_create_payment" type="object"
+                            string="Төлбөр гараар бүртгэх"
+                            attrs="{'invisible': [('state', 'not in', ('confirmed', 'done'))]}"
+                            class="btn-primary"/>
+                    <field name="payment_id"/>
+                    <field name="duplicated" invisible="1"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_pay_bank_statement_search" model="ir.ui.view">
+      <field name="name">pay.bank.statement.search</field>
+      <field name="model">pay.bank.statement</field>
+      <field name="arch" type="xml">
+        <search string="Банкны хуулга">
+          <field name="name"/>
+          <group expand="0" string="Group By...">
+            <filter string="Жил" name="year_group" domain="[]" context="{'group_by':'date:year'}"/>
+            <filter string="Сар" name="month_group" domain="[]" context="{'group_by':'date:month'}"/>
+          </group>
+          <searchpanel>
+            <field name="account_id" select="multi" string="Данс" enable_counters="1"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+    <record id="view_pay_bank_statement_tree" model="ir.ui.view">
+      <field name="name">pay.bank.statement.tree</field>
+      <field name="model">pay.bank.statement</field>
+      <field name="arch" type="xml">
+        <tree string="Банкны хуулга" default_order="date desc" expand="1" export_xlsx="false">
+          <field name="name"/>
+          <field name="date"/>
+          <field name="payment_created_count"/>
+          <field name="payment_uncreated_count"/>
+          <field name="company_id"/>
+          <field name="total_income_amount"/>
+          <field name="total_outgoing_amount"/>
+          <field name="state"/>
+          <button name="show_payment_list" type="object"
+                  string="Үүссэн төлбөрүүд" class="btn-primary"
+                  icon="fa-eye"
+                  states="confirmed,done"
+          />
+          <!--                    <button name="show_payment_list" type="object"-->
+          <!--                                stirng="Үүссэн төлбөрүүд" class="btn-primary"-->
+          <!--                                icon="fa fa-fw fa-eye"-->
+          <!--                        />-->
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_bank_statement" model="ir.actions.act_window">
+      <field name="name">Банкны хуулга</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.bank.statement</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[]</field>
+      <field name="context">
+        {
+        'search_default_year_group': 1,
+        'search_default_month_group': 1
+        }
+      </field>
+    </record>
+
+    <record id="view_pay_bank_statement_line_search" model="ir.ui.view">
+      <field name="name">pay.bank.statement.line.search</field>
+      <field name="model">pay.bank.statement.line</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="payment_ref"/>
+          <field name="ref"/>
+        </search>
+      </field>
+    </record>
+    <record id="view_pay_bank_statement_line_tree" model="ir.ui.view">
+      <field name="name">pay.bank.statement.line.tree</field>
+      <field name="model">pay.bank.statement.line</field>
+      <field name="arch" type="xml">
+        <tree string="Банкны хуулга" delete="0" export_xlsx="false">
+          <field name="address_id"/>
+          <field name="address_type"/>
+          <field name="payment_ref"/>
+          <field name="ref" optional="hide"/>
+          <field name="ccode" optional="hide"/>
+          <field name="datetime"/>
+          <field name="amount"/>
+          <field name="state" optional="hide"/>
+          <button name="action_create_payment" type="object"
+                  string="Төлбөр гараар бүртгэх"
+                  attrs="{'invisible': [('state', 'not in', ('confirmed', 'done'))]}"
+                  class="btn-primary" groups="ub_kontor.group_kontor_cass"/>
+          <field name="payment_id"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_bank_statement_line" model="ir.actions.act_window">
+      <field name="name">Хуулганы мөр</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.bank.statement.line</field>
+      <field name="view_mode">tree</field>
+      <field name="domain">[]</field>
+    </record>
+    <!--   Конторын банкны хуулга     -->
+
+    <!--    Конторын нэхэмжлэл    -->
+    <record id="view_pay_receipt_address_invoice_form" model="ir.ui.view">
+      <field name="name">pay.receipt.address.invoice.form</field>
+      <field name="model">pay.receipt.address.invoice</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="create_ebarimt" string="И-Баримт үүсгэх" type="object" class="btn-secondary"
+                    groups="ub_kontor.group_kontor_cass"/>
+            <button name="register_payment" string="Төлбөр үүсгэх" type="object" class="btn-primary"
+                    groups="ub_kontor.group_kontor_cass"/>
+            <button name="post" string="Нийтлэх" type="object" class="btn-primary" states="draft"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="receipt_address_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="payment_state" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="payment_reference" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="address_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="owner_name"/>
+                <field name="year" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="month" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+              <group>
+                <field name="company_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="amount_untaxed" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="amount_tax" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="amount_total" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="amount_residual" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="payment_line_ids">
+                  <tree delete="0" create="0" export_xlsx="false">
+                    <field name="account_id"/>
+                    <field name="payment_id"/>
+                    <field name="reconciled_date"/>
+                    <field name="payment_date"/>
+                    <field name="amount"/>
+                    <field name="period_id"/>
+                    <button type="object" name="action_remove" icon="fa-trash"/>
+                  </tree>
+                </field>
+                <field name="paid_date"/>
+              </group>
+            </group>
+
+
+            <notebook>
+              <page string="Мөр">
+                <field name="line_ids">
+                  <tree export_xlsx="false">
+                    <field name="name"/>
+                    <field name="service_type_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="uom_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="price" invisible="1"/>
+                    <field name="usage"/>
+                    <field name="transition_coef"/>
+                    <field name="days"/>
+                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="price"/>
+                    <field name="amount" sum="Дүн"/>
+                    <field name="noat" sum="НӨАТ"/>
+                    <field name="total_amount" sum="Нийт дүн"/>
+                    <field name="now_counter" invisible="1"/>
+                    <field name="last_counter" invisible="1"/>
+                    <field name="difference_counter" invisible="1"/>
+                    <field name="fraction_counter" invisible="1"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+            <notebook>
+              <page string="Тоолуурын заалт">
+                <field name="counter_line_ids">
+                  <tree export_xlsx="false">
+                    <field name="address_owner"/>
+                    <field name="counter_name_id" options="{'no_create': True}"/>
+                    <field name="counter_number"/>
+                    <field name="counter_code"/>
+                    <field name="now_counter" sum="Эхний заалтын нийлбэр"/>
+                    <field name="last_counter" sum="Сүүлийн заалтын нийлбэр"/>
+                    <field name="difference" sum="Зөрүү нийлбэр"/>
+                    <field name="fraction" sum="Задгай нийлбэр"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+
+      </field>
+    </record>
+    <record id="view_pay_receipt_address_invoice_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.address.invoice.tree</field>
+      <field name="model">pay.receipt.address.invoice</field>
+      <field name="arch" type="xml">
+        <tree expand="1" default_order="year desc, month desc" export_xlsx="false">
+          <header>
+            <button name="create_ebarimt" string="И-Баримт үүсгэх" type="object" class="btn-secondary"/>
+            <button name="register_payment" string="Төлбөр үүсгэх" type="object" class="btn-primary"/>
+            <button name="post" string="Нийтлэх" type="object" class="btn-primary"/>
+          </header>
+          <field name="name"/>
+          <field name="receipt_address_id"/>
+          <field name="payment_reference"/>
+          <field name="company_id"/>
+          <field name="address_id" invisible="1"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="year"/>
+          <field name="month"/>
+          <field name="payment_state" widget="badge" decoration-danger="payment_state == 'not_paid'"
+                 decoration-warning="payment_state in ('partial',)"
+                 decoration-success="payment_state in ('paid',)"/>
+          <field name="state"/>
+          <field name="amount_untaxed" sum="True"/>
+          <field name="amount_tax" sum="True"/>
+          <field name="amount_total" sum="True"/>
+          <field name="amount_residual" sum="True"/>
+        </tree>
+      </field>
+    </record>
+    <record id="view_pay_receipt_address_invoice_search" model="ir.ui.view">
+      <field name="name">pay.receipt.address.invoice.search</field>
+      <field name="model">pay.receipt.address.invoice</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_id"/>
+          <field name="inspector_id"/>
+          <filter string="Төлөгдөөгүй" name="not_paid" domain="[('payment_state', '=', 'not_paid')]"/>
+          <filter string="Дутуу төлсөн" name="partial" domain="[('payment_state', '=', 'partial')]"/>
+          <filter string="Төлөгдсөн" name="paid" domain="[('payment_state', '=', 'paid')]"/>
+          <group expand="0" string="Group By...">
+            <filter string="Төлөлтийн төлөв" name="payment_state_group" domain="[]"
+                    context="{'group_by': 'payment_state'}"/>
+            <filter string="Жил" name="year_group" domain="[]" context="{'group_by':'year'}"/>
+            <filter string="Сар" name="month_group" domain="[]" context="{'group_by':'month'}"/>
+          </group>
+          <searchpanel>
+            <field name="payment_state" select="multi" string="Төлөлтийн төлөв"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+    <record id="action_pay_receipt_address_invoice" model="ir.actions.act_window">
+      <field name="name">Нэхэмжлэл</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt.address.invoice</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[]</field>
+      <field name="search_view_id" ref="view_pay_receipt_address_invoice_search"/>
+      <field name="context">
+        {
+        'search_default_not_paid': 1,
+        'search_default_partial': 1,
+        'search_default_year_group': 1,
+        'search_default_month_group': 1,
+        }
+      </field>
+    </record>
+
+
+    <!--    Конторын нэхэмжлэл    -->
+
+
+    <!--    Конторын төлбөр    -->
+    <record id="view_pay_address_payment_line_tree" model="ir.ui.view">
+      <field name="name">pay.address.payment.line.tree</field>
+      <field name="model">pay.address.payment.line</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom" export_xlsx="false">
+          <field name="payment_id"/>
+          <field name="payment_ref"/>
+          <field name="address_id"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="reconciled_date"/>
+          <field name="invoice_id"/>
+          <field name="period_id" groups="base.group_system"/>
+          <field name="amount" sum="True"/>
+          <field name="invoice_total_amount" sum="True"/>
+          <field name="payment_amount" sum="True"/>
+        </tree>
+      </field>
+    </record>
+    <record id="view_pay_address_payment_line_tree_search" model="ir.ui.view">
+      <field name="name">pay.address.payment.line.tree</field>
+      <field name="model">pay.address.payment.line</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="address_id"/>
+        </search>
+      </field>
+    </record>
+    <record id="action_pay_address_payment_line" model="ir.actions.act_window">
+      <field name="name">Тулгалт</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.address.payment.line</field>
+      <field name="view_mode">tree</field>
+      <field name="domain">[]</field>
+      <field name="search_view_id" ref="view_pay_address_payment_line_tree_search"/>
+    </record>
+
+    <record id="view_pay_address_payment_form" model="ir.ui.view">
+      <field name="name">pay.address.payment.form</field>
+      <field name="model">pay.address.payment</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="confirm" string="Батлах" type="object" class="btn-primary" states="draft"
+                    groups="ub_kontor.group_kontor_cass"/>
+            <button name="register_invoices" string="Төлбөрт бүртгэх" type="object" class="btn-primary"
+                    states="confirmed" groups="ub_kontor.group_kontor_cass"/>
+            <button name="transfer_amount" type="object" string="Шилжүүлэг хийх" class="btn-primary"
+                    states="confirmed,processing" groups="ub_kontor.group_kontor_cass"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <field name="id" invisible="1"/>
+          <sheet>
+            <group>
+              <group>
+                <field name="account_id"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing', 'confirmed')), ('id', '!=', False)]}"/>
+                <field name="ref"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing', 'confirmed')), ('id', '!=', False)]}"/>
+                <field name="payment_ref"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing', 'confirmed')),('id', '!=', False)]}"/>
+                <field name="date"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing')),('statement_line_id', '!=', False)]}"/>
+              </group>
+              <group>
+                <field name="address_id" required="1"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing')),('id', '!=', False)]}"/>
+                <field name="statement_line_id" invisible="1"/>
+                <field name="amount"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing'))], 'invisible': [('statement_line_id', '!=', False)]}"/>
+                <field name="statement_line_amount" attrs="{'invisible': [('statement_line_id', '=', False)]}"/>
+
+
+                <field name="residual_amount"
+                       attrs="{'readonly': [('state', 'in', ('done', 'processing', 'confirmed')), ('id', '!=', False)], 'invisible': [('id', '=', False)]}"/>
+              </group>
+            </group>
+            <group>
+              <widget name="ub_kontor.pay_address_payment_reconciliation_widget"/>
+            </group>
+            <notebook>
+              <page string="Мөр">
+                <button name="unreconcile" states="processing,done" type="object" class="btn-primary"
+                        confirm="Бүх тулгалтыг салгахдаа итгэлтэй байна уу?"
+                        string="Бүх тулгалтыг хүчээр салгах"/>
+                <field name="line_ids">
+                  <tree editable="bottom" delete="0" create="0" export_xlsx="false">
+                    <field name="address_id" invisible="1"/>
+                    <field name="invoice_id" domain="[('address_id', '=', address_id),]"/>
+                    <field name="reconciled_date"/>
+                    <field name="amount" sum="True"/>
+                    <field name="invoice_total_amount" sum="True"/>
+                    <button type="object" name="action_remove" icon="fa-trash"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Шилжүүлэг хийсэн төлбөрүүд">
+                <field name="child_ids">
+                  <tree export_xlsx="false">
+                    <field name="payment_id"/>
+                    <field name="apartment_code"/>
+                    <field name="address_address"/>
+                    <field name="address_type"/>
+                    <field name="amount" sum="Нийт"/>
+                    <field name="residual_amount"/>
+                    <button name="action_join_with_parent" type="object" string="Буцаах"
+                            class="btn-primary"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_pay_address_payment_tree" model="ir.ui.view">
+      <field name="name">pay.address.payment.tree</field>
+      <field name="model">pay.address.payment</field>
+      <field name="arch" type="xml">
+        <tree expand="0" create="true" default_order="date desc" export_xlsx="false">
+          <header>
+            <button name="register_invoices" string="Төлбөрт бүртгэх" type="object" class="btn-primary"
+                    groups="ub_kontor.group_kontor_cass"/>
+            <button name="change_account" string="Данс өөрчлөх" type="object" class="btn-primary"
+                    groups="ub_kontor.group_kontor_cass"/>
+          </header>
+          <field name="address_id" required="1"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="state"/>
+          <field name="account_id"/>
+          <field name="ref"/>
+          <field name="date"/>
+          <field name="amount" sum="Дүн"/>
+          <field name="residual_amount" sum="Үлдэгдэл"/>
+          <field name="parent_id" invisible="1"/>
+          <button name="join_with_parent" type="object" class="btn-primary" string="Үндсэн төлбөрт нэгтгэх"
+                  attrs="{'invisible': [('parent_id', '=', False)]}"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_pay_address_payment_search" model="ir.ui.view">
+      <field name="name">pay.address.payment.search</field>
+      <field name="model">pay.address.payment</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="ref"/>
+          <field name="year" string="Он" widget="selection"/>
+          <field name="month" string="Сар" widget="selection"/>
+          <separator/>
+          <filter string="Тулгагдаагүй" name="unreconciled" domain="[('state', '=', 'confirmed')]"/>
+          <filter string="Үлдэгдэлтэй" name="has_residual" domain="[('state', '=', 'processing')]"/>
+          <filter name="current_month" string="Энэ сар" domain="[('date', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                    ('date', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+          <!--                    <filter string="Огнооны хүрээ" name="date_range"-->
+          <!--                            domain="[('year', '=', context.get('year')), ('month', '=', context.get('month'))]"/>-->
+          <separator/>
+          <group expand="0" string="Group By...">
+            <filter string="Төлөв" name="state_group" domain="[]" context="{'group_by':'state'}"/>
+            <filter string="Данс" name="account_id_group" domain="[]" context="{'group_by':'account_id'}"/>
+            <filter string="Өдөр" name="day_group" domain="[]" context="{'group_by':'date:day'}"/>
+          </group>
+          <searchpanel>
+            <field name="state" select="multi" string="Төлөв" enable_counters="1"/>
+            <field name="account_id" select="multi" string="Данс" enable_counters="1"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+
+    <record id="action_pay_address_payment" model="ir.actions.act_window">
+      <field name="name">Төлбөр</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.address.payment</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[('address_id', '!=', False)]</field>
+      <field name="search_view_id" ref="view_pay_address_payment_search"/>
+      <field name="context">
+        {
+        'search_default_current_month':1,
+        'search_default_day_group': 1,
+        }
+      </field>
+    </record>
+
+
+    <!--    Конторын төлбөр    -->
+    <record id="view_pay_bank_tree" model="ir.ui.view">
+      <field name="name">pay.bank.tree</field>
+      <field name="model">pay.bank</field>
+      <field name="arch" type="xml">
+        <tree editable="top" export_xlsx="false">
+          <field name="name"/>
+          <field name="code"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_bank" model="ir.actions.act_window">
+      <field name="name">Банк</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.bank</field>
+      <field name="view_mode">tree</field>
+    </record>
+    <!--    Банкны аккаунт    -->
+    <record id="view_pay_bank_account_search" model="ir.ui.view">
+      <field name="name">pay.bank.account.search</field>
+      <field name="model">pay.bank.account</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <separator/>
+          <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+          <separator/>
+        </search>
+      </field>
+    </record>
+    <record id="view_pay_bank_account_form" model="ir.ui.view">
+      <field name="name">pay.bank.account.form</field>
+      <field name="model">pay.bank.account</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="number"/>
+                <field name="type"/>
+                <field name="bank_id"/>
+                <field name="short_code"/>
+              </group>
+              <group>
+                <field name="company_id"/>
+                <field name="match_reconcile"/>
+                <field name="match_label" attrs="{'required': [('match_reconcile', '=', True)]}"/>
+                <field name="match_label_param" attrs="{'required': [('match_reconcile', '=', True)]}"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_pay_bank_account_tree" model="ir.ui.view">
+      <field name="name">pay.bank.account.tree</field>
+      <field name="model">pay.bank.account</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false">
+          <field name="name"/>
+          <field name="number"/>
+          <field name="short_code"/>
+          <field name="type"/>
+          <field name="match_reconcile"/>
+          <field name="company_id"/>
+          <field name="bank_id"/>
+          <field name="match_label"/>
+          <field name="match_label_param"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_pay_bank_account" model="ir.actions.act_window">
+      <field name="name">Данс</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.bank.account</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[]</field>
+    </record>
+
+    <!--    Банкны аккаунт    -->
+
+    <!--    Тулгалт (psql view)    -->
+    <record id="action_pay_address_payment_line_view" model="ir.actions.act_window">
+      <field name="name">Тулгалт</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.address.payment.line.view</field>
+      <field name="view_mode">tree,graph</field>
+      <field name="domain">[]</field>
+      <field name="context">
+        {
+        }
+      </field>
+    </record>
+
+    <record id="pay_address_payment_line_view_tree" model="ir.ui.view">
+      <field name="name">pay.address.payment.line.view.tree</field>
+      <field name="model">pay.address.payment.line.view</field>
+      <field name="arch" type="xml">
+        <tree expand="1" export_xlsx="false">
+          <field name="payment_id"/>
+          <field name="payment_ref"/>
+          <field name="address_id"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="invoice_id"/>
+          <field name="amount"/>
+          <field name="invoice_total_amount"/>
+          <field name="payment_amount"/>
+          <field name="reconciled_date"/>
+          <field name="payment_date"/>
+          <field name="period_id"/>
+
+          <field name="reconciled_uid"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="pay_address_payment_line_view_search" model="ir.ui.view">
+      <field name="name">pay.address.payment.line.view.search</field>
+      <field name="model">pay.address.payment.line.view</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="payment_ref"/>
+          <field name="reconciled_date"/>
+          <field name="payment_date"/>
+          <field name="invoice_id"/>
+          <field name="payment_id"/>
+          <separator/>
+          <filter string="Гараар үүсгэсэн" name="has_not_statement_line"
+                  domain="[('statement_line_id', '=', False)]"/>
+          <filter string="Банкны хуулгаар үүссэн" name="has_statement_line"
+                  domain="[('statement_line_id', '!=', False)]"/>
+          <group expand="0" string="Group By...">
+            <filter string="Тулгалт хийсэн огноо" name="reconciled_date_group" domain="[]"
+                    context="{'group_by':'reconciled_date'}"/>
+            <filter string="Банк" name="bank_id_group" domain="[]" context="{'group_by':'bank_id'}"/>
+            <filter string="Данс" name="account_id_group" domain="[]" context="{'group_by':'account_id'}"/>
+            <filter string="Байр" name="apartment_id_group" domain="[]"
+                    context="{'group_by':'apartment_id'}"/>
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]"
+                    context="{'group_by':'inspector_id'}"/>
+            <filter string="Тулгалт хийсэн" name="reconciled_uid_group" domain="[]"
+                    context="{'group_by': 'reconciled_uid'}"/>
+            <filter string="Мөчлөг" name="period_id_group" domain="[]"
+                    context="{'group_by': 'period_id'}"/>
+          </group>
+          <searchpanel>
+            <field name="bank_id" select="multi" string="Банк"/>
+            <field name="account_id" select="multi" string="Данс"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+
+    <!--   санхүүгийн мөчлөг     -->
+    <record id="view_pay_period_tree" model="ir.ui.view">
+      <field name="name">pay.period.tree</field>
+      <field name="model">pay.period</field>
+      <field name="arch" type="xml">
+        <tree editable="bottom" export_xlsx="false" default_order="year desc,month desc">
+          <field name="year"/>
+          <field name="month"/>
+          <field name="state" decoration-danger="state == 'closed'"
+                           decoration-success="state == 'opened'"/>
+          <field name="address_type"/>
+          <field name="company_id"/>
+          <field name="opened_date"/>
+          <field name="opened_uid"/>
+          <field name="closed_date"/>
+          <field name="closed_uid"/>
+          <button name="open" class="btn-primary" type="object" string="Нээх"  icon="fa-eye" attrs="{'invisible': [('state', '=', 'opened')]}"/>
+          <button name="close" class="btn-primary" type="object" string="Хаах"  icon="fa-eye-slash" attrs="{'invisible': [('state', '=', 'closed')]}"/>
+          <button name="draft" class="btn-primary" type="object" string="Нороглох"  icon="fa-edit" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+          <!--                    <button name="register_current_current_report" class="btn-primary"-->
+          <!--                            string="Одоогийн санхүүгийн мөчлөг хаах" type="object" groups="base.group_system"/>-->
+          <button name="register_current_current_report" type="object" string="Тайлан шинэчлэх" class="btn-primary"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_period" model="ir.actions.act_window">
+      <field name="name">Санхүүгийн мөчлөг</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.period</field>
+      <field name="view_mode">tree</field>
+      <field name="domain">[]</field>
+      <field name="context">
+        {
+        }
+      </field>
+    </record>
+
+    <!--   MENU     -->
+    <menuitem id="menu_account" name="Төлбөр тооцоо" parent="ub_kontor.kontor_main_menu"/>
+    <menuitem id="menu_pay_receipt_address_invoice" name="Нэхэмжлэл"
+              action="action_pay_receipt_address_invoice" parent="menu_account" sequence="1"/>
+
+    <menuitem id="main_menu_bank_statement" name="Банкны хуулга" parent="menu_account" sequence="2"
+              groups="ub_kontor.group_kontor_accountant"/>
+    <menuitem id="menu_pay_bank_statement" name="Банкны хуулга"
+              action="action_pay_bank_statement" parent="main_menu_bank_statement" sequence="1"
+              groups="ub_kontor.group_kontor_accountant"/>
+    <menuitem id="menu_pay_bank_statement_line" name="Хуулганы мөр"
+              action="action_pay_bank_statement_line" parent="main_menu_bank_statement" sequence="2"
+              groups="ub_kontor.group_kontor_accountant"/>
+
+    <menuitem id="menu_pay_address_payment" name="Төлбөр"
+              action="action_pay_address_payment" parent="menu_account" sequence="3"/>
+
+    <menuitem id="menu_account_reconciliation" name="Тулгалт" parent="menu_account" sequence="4"
+              groups="ub_kontor.group_kontor_cass"/>
+
+    <menuitem id="menu_pay_address_payment_line" name="Тулгалт"
+              action="action_pay_address_payment_line" parent="menu_account_reconciliation" sequence="1"
+              groups="ub_kontor.group_kontor_cass"/>
+    <menuitem id="menu_pay_address_payment_line_view" name="Тулгалт тойм"
+              action="action_pay_address_payment_line_view" parent="menu_account_reconciliation" sequence="2"
+              groups="ub_kontor.group_kontor_cass"/>
+
+    <menuitem id="menu_pay_bank_account" name="Данс"
+              action="action_pay_bank_account" parent="menu_account" sequence="5"
+              groups="ub_kontor.group_kontor_senior_accountant"/>
+    <menuitem id="menu_pay_period" name="Мөчлөг" action="action_pay_period" sequence="6" parent="menu_account"
+              groups="ub_kontor.group_kontor_senior_accountant"/>
+    <menuitem id="menu_pay_bank" name="Банк"
+              action="action_pay_bank" parent="menu_account" sequence="7"
+              groups="ub_kontor.group_kontor_senior_accountant"/>
+
+  </data>
+</odoo>

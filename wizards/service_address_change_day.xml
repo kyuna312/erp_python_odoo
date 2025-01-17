@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_service_address_change_day_wizard_form" model="ir.ui.view">
+            <field name="name">service.address.change.day.wizard.form</field>
+            <field name="model">service.address.change.day.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="day"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="change_days" type="object" class="btn-primary" string="Хоног өөрчлөх"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

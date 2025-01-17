@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="kontor_assets_backend" name="kontor assets" inherit_id="web.assets_backend">
+    <xpath expr="." position="inside">
+      <!--            <script type="text/javascript" src="/ub_kontor/static/src/js/inherit_list_render.js"></script>-->
+      <script type="text/javascript" src="/ub_kontor/static/src/js/user_access_type_template.js"></script>
+      <script type="text/javascript"
+              src="/ub_kontor/static/src/js/pay_address_payment_reconciliation_widget.js"></script>
+      <script type="text/javascript"
+              src="/ub_kontor/static/src/js/pay_bank_statement_reconciliation_widget.js"></script>
+    </xpath>
+  </template>
+  <data>
+    <menuitem id="kontor_main_menu" name="Контор" sequence="10"
+              web_icon="ub_kontor,static/images/company_icon1.png" groups="ub_kontor.group_kontor"/>
+    <!--=========================  Лавлах  =========================-->
+    <menuitem id="ref_main_menu" name="Үндсэн" sequence="2" parent="kontor_main_menu"/>
+
+    <menuitem id="menu_main_apartment" name="Үндсэн байр" action="action_main_apartment" parent="ref_main_menu"/>
+    <menuitem id="menu_apartment" name="Байр" action="action_apartment" parent="ref_main_menu"/>
+    <menuitem id="menu_address_management" name="Address Management" sequence="5"/>
+
+    <!--=========================  Бүртгэл  =========================-->
+    <menuitem id="registration_main_menu" name="Бүртгэл" sequence="2" parent="kontor_main_menu"/>
+    <menuitem id="menu_address" name="Тоот" parent="registration_main_menu" action="action_address"/>
+
+    <menuitem id="menu_central_heating_station_line" name="ЦТП хуваарилалт" parent="registration_main_menu"
+              action="action_ref_central_heating_station_line"/>
+
+    <menuitem id="menu_central_heating_station_allocation" name="ЦТП хуваарилах" parent="registration_main_menu"
+              action="action_central_heating_station_allocation_wizard"/>
+
+    <menuitem id="sub_menu_user_service" name="Хэрэглэгчийн үйлчилгээ" parent="registration_main_menu"
+              sequence="40"/>
+
+    <menuitem id="menu_user_service" name="Хэрэглэгчийн үйлчилгээ"
+              action="action_user_service" parent="sub_menu_user_service" sequence="1"/>
+
+    <menuitem id="menu_user_service_creator" name="Хэрэглэгчийн үйлчилгээ оруулах"
+              action="action_user_service_creator" parent="sub_menu_user_service" sequence="2"/>
+
+    <menuitem id="menu_ut_counter" name="Усны тоолуур"
+              action="action_ut_counter" parent="registration_main_menu" sequence="40"/>
+
+    <menuitem id="menu_dt_counter" name="Дулааны тоолуур"
+              action="action_dt_counter" parent="registration_main_menu" sequence="40"/>
+
+
+    <!--=========================  Тооцоо  =========================-->
+    <menuitem id="calculation_main_menu" name="Тооцоо" sequence="2" parent="kontor_main_menu"/>
+    <menuitem id="menu_counter_sharing" name="Хуваагдах хэрэглээ"
+              action="action_counter_sharing" parent="calculation_main_menu" sequence="50"/>
+
+    <menuitem id="sub_menu_additional_service" name="Нэмэлт үйлчилгээ"
+              parent="calculation_main_menu" sequence="90"
+    />
+    <menuitem id="menu_additional_service" name="Нэмэлт үйлчилгээ"
+              action="action_additional_service" parent="sub_menu_additional_service" sequence="1"/>
+
+    <menuitem id="menu_additional_service_creator" name="Нэмэлт үйлчилгээ оруулах"
+              action="action_additional_service_creator" parent="sub_menu_additional_service" sequence="2"/>
+    <menuitem id="menu_additional_service_xls_reader" name="Нэмэлт үйлчилгээ xls-ээс оруулах"
+              action="action_service_address_xls_reader" parent="sub_menu_additional_service" sequence="3"/>
+
+
+    <menuitem id="counter_counter_line_group_menu" name="Тоолуурын заалт"
+              parent="calculation_main_menu" sequence="3" action="action_counter_counter_line_group"/>
+
+    <menuitem id="service_payment_menu" name="Төлбөрт үйлчилгээ"
+              parent="calculation_main_menu" sequence="4"/>
+    <menuitem id="service_payment_sub_menu" name="Төлбөрт үйлчилгээ"
+              parent="service_payment_menu" sequence="1" action="action_service_payment"/>
+    <menuitem id="service_payment_xls_reader_menu" name="Төлбөрт үйлчилгээ xls файл оруулах"
+              parent="service_payment_menu" sequence="2" action="action_service_payment_xls_reader"/>
+
+    <menuitem id="service_timed_condition_menu" name="Хугацаат үйлчилгээ"
+              parent="calculation_main_menu" sequence="5" action="action_service_timed_condition"/>
+
+    <menuitem id="pay_receipt_menu" name="Төлбөл зохих"
+              parent="calculation_main_menu" sequence="6" action="action_pay_receipt"/>
+
+    <!--        <menuitem id="menu_service_deduction" name="Хасагдах хэрэглээ"-->
+    <!--                   action="action_service_deduction"-->
+    <!--          parent="calculation_main_menu" sequence="90"-->
+    <!--        />-->
+    <menuitem id="menu_service_deduction_group" name="Хасагдах хэрэглээ"
+              action="action_service_deduction_group"
+              parent="calculation_main_menu" sequence="91"
+    />
+
+
+    <!--=========================  Тохиргоо  =========================-->
+    <menuitem id="config_main_menu" name="Тохиргоо"
+              parent="kontor_main_menu" sequence="10" groups="ub_kontor.group_kontor_accountant"/>
+
+    <menuitem id="sub_menu_address_conf" name="Хаягжилт" parent="config_main_menu"/>
+    <menuitem id="menu_aimag" name="Аймаг" action="action_aimag" parent="sub_menu_address_conf"/>
+    <menuitem id="menu_duureg" name="Дүүрэг" action="action_duureg" parent="sub_menu_address_conf"/>
+    <menuitem id="menu_horoo" name="Хороо" action="action_horoo" parent="sub_menu_address_conf"/>
+
+    <menuitem id="sub_menu_service_conf" name="Үйлчилгээ" parent="config_main_menu"/>
+    <menuitem id="menu_pricelist" name="Үнийн тариф" action="action_pricelist" parent="sub_menu_service_conf"/>
+    <menuitem id="menu_pricelist_type" name="Үнийн тарифын төрөл" action="action_pricelist_type"
+              parent="sub_menu_service_conf"/>
+
+    <menuitem id="menu_organization" name="Байгууллага" action="action_organization"
+              parent="sub_menu_service_conf"/>
+    <menuitem id="menu_service_type" name="Үйлчилгээний төрөл" action="action_service_type"
+              parent="sub_menu_service_conf"/>
+
+    <!--            <menuitem id="menu_service" name="Үйлчилгээ"-->
+    <!--                      action="action_service" parent="sub_menu_service_conf" sequence="80"/>-->
+
+    <menuitem id="sub_menu_counter_conf" name="Тоолуур" parent="config_main_menu"/>
+    <!--            <menuitem id="menu_counter_type" name="Тоолуурын төрөл"-->
+    <!--                      action="action_counter_type" parent="sub_menu_counter_conf" sequence="10"/>-->
+    <menuitem id="menu_counter_warrant" name="Тоолуурын баталгаа"
+              action="action_counter_warrant" parent="sub_menu_counter_conf" sequence="30"/>
+    <menuitem id="menu_counter_name" name="Тоолуурын нэр"
+              action="action_counter_name" parent="sub_menu_counter_conf" sequence="20"/>
+
+    <menuitem id="menu_address_activity_type" name="Чиглэл (Тоот)" action="action_address_activity_type"
+              parent="config_main_menu"/>
+    <menuitem id="menu_address_category" name="Ангилал (Тоот)" action="action_address_category"
+              parent="config_main_menu"/>
+    <menuitem id="menu_uom_uom" name="Хэмжих нэгж" action="uom.product_uom_form_action" parent="config_main_menu"/>
+    <!--=========================  QPAY  =========================-->
+    <menuitem id="menu_qpay" name="QPAY" parent="ub_kontor.kontor_main_menu" groups="base.group_system"/>
+    <menuitem id="menu_qpay_invoice" name="Qpay Нэхэмжлэл"
+              action="action_qpay_invoice" parent="menu_qpay" sequence="1"/>
+
+    <menuitem id="menu_qpay_settings" name="Qpay Тохиргоо"
+              action="action_qpay_invoice" parent="menu_qpay" sequence="2"/>
+    <menuitem id="menu_qpay_bank" name="Банк"
+              action="action_qpay_bank" parent="menu_qpay_settings" sequence="1"/>
+    <menuitem id="menu_qpay_configuration" name="QPAY тохиргоо"
+              action="action_qpay_configuration" parent="menu_qpay_settings" sequence="2"/>
+    <!--    base.action_res_bank_form-->
+    <menuitem id="menu_res_banks_kontor" name="Banks"
+              action="base.action_res_bank_form" parent="account.account_banks_menu" sequence="2"/>
+    <!--=========================  Тайлан  =========================-->
+    <menuitem id="menu_report" name="Тайлан" parent="kontor_main_menu"/>
+    <!-- Sub Menus -->
+    <menuitem id="menu_pay_uoo" name="Урьдчилж төлсөн төлөлт" parent="menu_report"
+              groups="ub_kontor.group_kontor_accountant" sequence="10"/>
+    <menuitem id="menu_pay_uoo_report"
+              name="Урьдчилж төлсөн төлөлт товчоо"
+              parent="menu_pay_uoo"
+              action="ub_kontor.action_pay_uoo_pdf_report_wizard"
+              sequence="10"/>
+    <menuitem id="menu_pay_uoo_detail_report"
+              name="Урьдчилж төлсөн төлөлт дэлгэрэнгүй"
+              parent="menu_pay_uoo"
+              action="ub_kontor.action_pay_uoo_detail_pdf_report_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_pay_receipt" name="Төлбөл зохих хөлсний мэдээ" parent="menu_report" sequence="20"/>
+    <menuitem id="menu_pay_receipt_report"
+              name="Төлбөл зохих хөлсний мэдээ"
+              parent="menu_pay_receipt"
+              action="ub_kontor.action_pay_receipt_pdf_report_wizard" groups="ub_kontor.group_kontor_inspector"
+              sequence="10"/>
+    <menuitem id="menu_pay_receipt_detail_report"
+              name="Төлбөл зохих хөлсний дэлгэрэнгүй мэдээ"
+              parent="menu_pay_receipt"
+              action="ub_kontor.action_pay_receipt_detail_pdf_report_wizard"
+              groups="ub_kontor.group_kontor_inspector"
+              sequence="20"/>
+
+    <menuitem id="menu_water_heat_management" name="Ус дулааны мэдээ" parent="menu_report" sequence="30"
+              groups="ub_kontor.group_kontor_accountant"/>
+    <menuitem id="menu_water_usage_list" name="Усны хэмжүүрийн заалтууд хайлт"
+              parent="menu_water_heat_management"
+              action="ub_kontor.action_water_usage_list_pdf_report_wizard" sequence="10"/>
+    <menuitem id="menu_water_report" name="Усны мэдээ " parent="menu_water_heat_management"
+              action="ub_kontor.action_water_report_pdf_wizard" sequence="20"/>
+    <menuitem id="menu_heat_report" name="Дулааны мэдээ " parent="menu_water_heat_management"
+              action="ub_kontor.action_heat_report_pdf_wizard" sequence="30"/>
+    <menuitem id="menu_counter_list_inspector_report" name="Тоолуурын мэдээ байцаагчаар "
+              parent="menu_water_heat_management" action="ub_kontor.action_counter_list_inspector_report_wizard"
+              sequence="40"/>
+
+
+    <menuitem id="menu_pay_residual" name="Үлдэгдлийн тайлан" parent="menu_report" sequence="40"
+              groups="ub_kontor.group_kontor_accountant"/>
+    <menuitem
+        id="menu_pay_residual_pdf_report_wizard"
+        name="Үлдэгдлийн товчоо"
+        parent="menu_pay_residual"
+        action="ub_kontor.action_pay_residual_pdf_report_wizard"
+        sequence="10" groups="ub_kontor.group_kontor_accountant"
+    />
+    <menuitem
+        id="menu_pay_user_residual_pdf_report_wizard"
+        name="Хэрэглэгчийн үлдэгдлийн товчоо"
+        parent="menu_pay_residual"
+        action="ub_kontor.action_pay_user_residual_pdf_report_wizard"
+        sequence="20" groups="ub_kontor.group_kontor_accountant"
+    />
+    <menuitem
+        id="menu_pay_customer_residual_balance_pdf_report_wizard"
+        name="Хэрэглэгчийн төлөлт, үлдэгдлийн дэлгэрэнгүй"
+        parent="menu_pay_residual"
+        action="ub_kontor.action_pay_customer_residual_balance_pdf_report_wizard"
+        sequence="30" groups="ub_kontor.group_kontor_accountant"
+    />
+    <menuitem
+        id="menu_pay_residual_list_user_balance_report_wizard"
+        name="Үлдэгдэлтэй хэрэглэгчдийн жагсаалт (тоотоор)"
+        parent="menu_pay_residual"
+        action="ub_kontor.action_pay_residual_list_user_balance_report_wizard"
+        sequence="40" groups="ub_kontor.group_kontor_accountant"
+    />
+    <menuitem id="menu_pay_three_month_user_residual_list_pdf_report_wizard"
+              name="3-дээш сар өртэй өрх"
+              parent="menu_pay_residual"
+              action="ub_kontor.action_pay_three_month_user_residual_list_pdf_report_wizard"
+              sequence="50" groups="ub_kontor.group_kontor_accountant"/>
+
+    <menuitem id="menu_pay_income" name="Орлогын тайлан" sequence="50" parent="menu_report"/>
+    <menuitem
+        id="menu_pay_income_pdf_report_wizard"
+        name="Орлогын тайлан сараар"
+        parent="menu_pay_income"
+        action="ub_kontor.action_pay_income_pdf_report_wizard" groups="ub_kontor.group_kontor_accountant"
+        sequence="10"
+    />
+  </data>
+</odoo>

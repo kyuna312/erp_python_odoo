@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pay_address_payment_transfer_form" model="ir.ui.view">
+            <field name="name">pay.address.payment.transfer.form</field>
+            <field name="model">pay.address.payment.transfer</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="payment_id"/>
+                                <field name="payment_residual"/>
+                            </group>
+                            <group>
+                                <field name="address_id" context="{'sudo': True}"/>
+                                <field name="amount"/>
+                            </group>
+                        </group>
+                        <group>
+                            <widget name="ub_kontor.pay_address_payment_reconciliation_widget"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_transfer_amount" type="object" class="btn-primary" string="Transfer"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

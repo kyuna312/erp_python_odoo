@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Define or reference a portrait paper format -->
+        <record id="portrait_paperformat" model="report.paperformat">
+            <field name="name">Portrait Paper Format</field>
+            <field name="default">True</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+        </record>
+
+        <record id="action_invoice_pdf_report" model="ir.actions.report">
+            <field name="name">Нэхэмжлэл</field>
+            <field name="model">pay.receipt.address.invoice</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">ub_kontor.template_invoice_pdf_report</field>
+            <field name="binding_model_id" ref="model_pay_receipt_address_invoice"/>
+            <field name="multi" eval="True"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="portrait_paperformat"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,41 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_water_report_pdf_wizard_form" model="ir.ui.view">
+        <field name="name">water.report.pdf.wizard.form</field>
+        <field name="model">water.report.pdf.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Усны мэдээ хайлт" paper="a4-l">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                        </group>
+                        <group><field name="water_report_date"/></group>
+                    </group>
+                    <footer>
+                        <button name="download" string="Тайлан харах" type="object" class="btn-primary" icon="fa-download"/>
+                        <button string="Болих" special="cancel" class="btn-secondary" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_water_report_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">Усны мэдээ хайлт</field>
+        <field name="res_model">water.report.pdf.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_water_report_pdf_wizard_form"/>
+    </record>
+
+    <!-- QWeb Template -->
+    <record id="action_water_report_pdf" model="ir.actions.report">
+        <field name="name">Усны мэдээ хайлт</field>
+        <field name="model">water.report.pdf.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ub_kontor.template_water_report_pdf</field>
+        <field name="print_report_name">Тайлан - %(user_balance_list_date)s</field>
+    </record>
+</odoo>

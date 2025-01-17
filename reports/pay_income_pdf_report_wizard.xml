@@ -1,0 +1,66 @@
+<odoo>
+    <record id="paperformat_custom_a4_landscape" model="report.paperformat">
+        <field name="name">Custom A4 Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">5</field> <!-- Set top margin to 5 mm -->
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/> <!-- Optionally disable header line if not needed -->
+        <field name="header_spacing">0</field> <!-- Adjust header spacing if necessary -->
+        <field name="dpi">90</field> <!-- Set output DPI for better resolution -->
+    </record>
+
+    <!-- Form View for the Wizard -->
+    <record id="view_pay_income_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">pay.income.pdf.report.wizard.form</field>
+        <field name="model">pay.income.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Орлогын тайлан сараар">
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="address_type" readonly="1"/>
+                        </group>
+                        <!-- Display year and month pickers -->
+                        <group>
+                            <field name="income_year" string="Жил"/>
+                            <field name="month" string="Сар"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="bank_ids" widget="many2many_tags"/>
+                    </group>
+
+                    <footer>
+                        <button name="download_pdf" type="object" string="Тайлан харах" class="btn-primary"
+                                icon="fa-download"/>
+                        <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window Action to Open the Wizard -->
+    <record id="action_pay_income_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Орлогын тайлан сараар</field>
+        <field name="res_model">pay.income.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_pay_income_pdf_report_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Report Action Definition -->
+    <record id="action_pay_income_pdf_report" model="ir.actions.report">
+        <field name="name">Орлогын тайлан сараар</field>
+        <field name="model">pay.income.pdf.report.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.template_pay_income_pdf_report</field>
+        <field name="print_report_name">'Тайлан - %s' % (object.income_date)</field>
+        <field name="paperformat_id" ref="paperformat_custom_a4_landscape"/>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="access_type_systray">
+       <a class="dropdown-toggle o-no-caret" data-toggle="dropdown" data-display="static" aria-expanded="false"
+          title="Хандах эрх" href="#" role="button">
+<!--           <i id='fa-plus' class="fa fa-plus-square-o" role="img" aria-label="Add"/>-->
+           <t t-if="data" t-esc="data.current_access_type[1]"/>
+       </a>
+       <ul class="o_mail_navbar_dropdown dropdown-menu dropdown-menu-right" role="menu" id="AccessTypeList">
+           <t t-if="data">
+               <t t-foreach="data.access_types" t-as="types">
+                    <li t-att-class="types[0] == data.current_access_type[0] ? 'dropdown-item o_menu_entry_lvl_2 access_type active' : 'dropdown-item o_menu_entry_lvl_2 access_type'"
+                        style="cursor: pointer"
+                        t-att-value="types[0]"
+                    > <t t-esc="types[1]"/> </li>
+               </t>
+           </t>
+       </ul>
+   </t>
+   <t t-name="access_type_systray_main">
+       <li class="o_user_access_navbar_item">
+
+       </li>
+   </t>
+
+</templates>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pay_address_invoice_form" model="ir.ui.view">
+            <field name="name">pay.payment.change.account.form</field>
+            <field name="model">pay.payment.change.account</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="account_id"/>
+                            </group>
+                            <group>
+                                <field name="reconcile"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="change" type="object" string="Өөрчлөх" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pay_payment_change_account" model="ir.actions.act_window">
+            <field name="name">Данс өөрчлөх форм</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pay.payment.change.account</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

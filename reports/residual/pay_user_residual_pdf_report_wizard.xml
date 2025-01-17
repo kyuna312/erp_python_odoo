@@ -1,0 +1,50 @@
+<odoo>
+    <!-- Paper format definition -->
+    <record id="paperformat_custom_a4_landscape" model="report.paperformat">
+        <field name="name">Custom A4 Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">10</field> <!-- Set top margin to 5 mm -->
+        <field name="header_line" eval="False"/> <!-- Optionally disable header line if not needed -->
+        <field name="header_spacing">0</field> <!-- Adjust header spacing if necessary -->
+        <field name="dpi">90</field> <!-- Set output DPI for better resolution -->
+    </record>
+
+    <!-- Form View for the Pay User Residual PDF Report Wizard -->
+    <record id="view_pay_user_residual_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">pay.user.residual.pdf.report.wizard.form</field>
+        <field name="model">pay.user.residual.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Хэрэглэгчийн үлдэгдлийн товч тайлан">
+                <sheet>
+                    <group>
+                        <field name="residual_date" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="download_pdf" string="Тайлан харах" type="object" class="btn-primary" icon="fa-download"/>
+                        <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for opening the User Pay Residual PDF Report Wizard -->
+    <record id="action_pay_user_residual_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Хэрэглэгчийн үлдэгдлийн товч тайлан</field>
+        <field name="res_model">pay.user.residual.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_pay_user_residual_pdf_report_wizard_form"/>
+    </record>
+
+    <!-- Action for generating the Pay User Residual PDF Report -->
+    <record id="action_pay_user_residual_pdf_report" model="ir.actions.report">
+        <field name="name">Хэрэглэгчийн үлдэгдлийн товч тайлан</field>
+        <field name="model">pay.user.residual.pdf.report.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.template_pay_user_residual_pdf_report</field>
+        <field name="print_report_name">Хэрэглэгчийн үлдэгдлийн товч тайлан - %(residual_date)s</field>
+        <field name="paperformat_id" ref="paperformat_custom_a4_landscape"/>
+    </record>
+</odoo>

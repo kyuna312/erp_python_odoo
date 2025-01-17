@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="qpay_bank_tree_view">
+      <field name="name">qpay.bank.tree</field>
+      <field name="model">qpay.bank</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Qpay банк" editable="top">
+          <field name="code"/>
+          <field name="eng"/>
+          <field name="mon"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_qpay_bank">
+      <field name="name">Qpay Банк</field>
+      <field name="res_model">qpay.bank</field>
+      <field name="view_mode">tree</field>
+    </record>
+    <record model="ir.ui.view" id="qpay_configuration_tree_view">
+      <field name="name">qpay.configuration.tree</field>
+      <field name="model">qpay.configuration</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Qpay Тохиргоо">
+          <field name="name"/>
+          <!--                    <field name="price"/>-->
+          <field name="company_id"/>
+          <!--                    <field name="bank_id"/>-->
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="qpay_configuration_form_view">
+      <field name="name">qpay.configuration.form</field>
+      <field name="model">qpay.configuration</field>
+      <field name="arch" type="xml">
+        <form string="Qpay Тохиргоо">
+          <header>
+            <button name="action_createMerchant" type="object" string="QPAY merchant үүсгэх" class="btn-primary"/>
+          </header>
+          <sheet>
+            <separator string="Qpay Тохиргоо"/>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="register"/>
+                <!--                                <field name="price"/>-->
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="company_id"/>
+                <field name="lat"/>
+                <field name="lng"/>
+                <field name="mcc_code"/>
+                <field name="city"/>
+                <field name="district"/>
+                <field name="address"/>
+              </group>
+              <group>
+                <field name="owner_surname"/>
+                <field name="owner_name"/>
+                <field name="owner_register"/>
+                <!--                                <field name="bank_id"/>-->
+                <!--                                <field name="name_bank"/>-->
+                <!--                                <field name="account_bank"/>-->
+                <!--                                <field name="journal_ids" widget="many2many_tags"/>-->
+                <field name="account_ids" widget="many2many_tags"/>
+                <field name="qpay_terminal"/>
+                <field name="qpay_token_expire"/>
+                <field name="merchant_id"/>
+
+                <field name="qpay_token"/>
+                <field name="active"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_qpay_configuration">
+      <field name="name">Qpay Тохиргоо</field>
+      <field name="res_model">qpay.configuration</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record model="ir.ui.view" id="qpay_invoice_tree_view">
+      <field name="name">qpay.invoice.tree</field>
+      <field name="model">qpay.invoice</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Qpay Нэхэмжлэл">
+          <field name="invoice_number"/>
+          <field name="user_id"/>
+          <field name="reference"/>
+          <field name="qpay_invoice"/>
+          <field name="company_id"/>
+          <field name="amount"/>
+          <field name="is_paid"/>
+          <field name="auth_user_id" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="qpay_invoice_form_view">
+      <field name="name">qpay.invoice.form</field>
+      <field name="model">qpay.invoice</field>
+      <field name="arch" type="xml">
+        <form string="Qpay Нэхэмжлэл">
+          <sheet>
+            <group>
+              <field name="invoice_number"/>
+              <field name="user_id"/>
+              <field name="reference"/>
+              <field name="company_id"/>
+            </group>
+            <group>
+              <field name="qpay_invoice"/>
+              <field name="amount"/>
+              <field name="is_paid"/>
+              <field name="registered"/>
+              <field name="invoice_ids" widget="many2many_tags"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_qpay_invoice">
+      <field name="name">Qpay Нэхэмжлэл</field>
+      <field name="res_model">qpay.invoice</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="qpay_invocie_enter_paid_status_cron" model="ir.cron">
+      <field name="name">Нэхэмжлэлт төлсөн төлөвт оруулах (Контор)</field>
+      <field name="model_id" ref="model_qpay_invoice"/>
+      <field name="state">code</field>
+      <field name="code">model.enter_paid_status_cron()</field>
+      <field name="interval_number">2</field> <!-- Run every day -->
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field> <!-- Run indefinitely -->
+      <field name="doall" eval="False"/>
+      <field name="active" eval="True"/>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="pay_address_payment_reconciliation_widget">
+        <div>
+            <h1><t t-esc="a"/> </h1>
+            <table>
+                <thead>
+                    <tr style="border-bottom: 1px solid;">
+                        <th class="p-2">
+                            Нэхэмжлэл
+                        </th>
+                        <th class="p-2">
+                            Үлдэгдэл
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-if="invoice_list">
+                        <tr t-foreach="invoice_list" t-as="invoice" style="border-bottom: 1px solid #eee;">
+                            <td class="p-2">
+                                <t t-esc="invoice.name"/>
+                            </td>
+                            <td class="p-2" >
+                                <t t-esc="invoice.amount_residual"/>
+                            </td>
+                            <td>
+                                <button class="btn o_form_uri o_field_widget o_required_modifier kontor_reconcile"
+                                        t-att-data="invoice.id" t-if="show_button==true">
+                                    Нэмэх
+                                </button>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr>
+                        <th class="text-right p-2">Нийт үлдэгдэл:</th>
+                        <th>
+                            <t t-esc="total_residual"/>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+   </t>
+</templates>

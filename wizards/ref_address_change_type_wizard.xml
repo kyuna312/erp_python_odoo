@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="ref_address_change_type_form_view">
+            <field name="name">ref.address.change.type.wizard.form</field>
+            <field name="model">ref.address.change.type</field>
+            <field name="arch" type="xml">
+                <form string="Тоотын төрөл өөрчлөх">
+                    <sheet>
+                        <group>
+                            <field name="address_type"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="change_address_type" type="object" string="Өөрчлөх" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

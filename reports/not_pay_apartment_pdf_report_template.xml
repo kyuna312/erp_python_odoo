@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="not_pay_apartment_pdf_report_template">
+        <t t-call="web.basic_layout">
+            <style>
+                @page { size: A4 landscape; margin: 20mm; }
+                .page { font-family: Arial, sans-serif; font-size: 12px; margin: 10px; }
+                .header, .footer, .table th, .table td { font-size: 12px; }
+                .table { width: 100%; border-collapse: collapse; }
+                .table th, .table td { padding: 5px; border: 1px solid #ddd; }
+                .text-end { text-align: right; }
+                .text-center { text-align: center; }
+                .fw-bold { font-weight: bold; }
+                .mb-0 { margin-bottom: 0; }
+            </style>
+            <div class="page content">
+                <div class="row pb-2">
+                    <div class="col-4 text-start">
+                        <t t-if="logo_data_uri">
+                            <img t-att-src="logo_data_uri" style="width: 100px; height: auto;"/>
+                        </t>
+                        <p>
+                            <t t-esc="address_type"/>
+                        </p>
+                    </div>
+                    <div class="col-8 text-end">
+                        <p class="mb-0 fw-bold" style="font-size: 13px;">
+                            <t t-esc="year"/>-<t t-esc="month"/> сарын <t t-esc="company_name"/>-ын хөлс төлөөгүй байрны жагсаалт
+                        </p>
+                    </div>
+                </div>
+                <table class="table table-sm m-0 table-borderless border border-right-0 border-left-0 border-dark">
+                    <thead>
+                        <tr>
+                            <th class="text-center border border-dark">Хэрэглэгчийн код</th>
+                            <th class="text-center border border-dark">Байр</th>
+                            <th class="text-center border border-dark">Тоот</th>
+                            <th class="text-center border border-dark">Хэрэглэгчийн нэр</th>
+                            <th class="text-center border border-dark">Эхний үлдэгдэл</th>
+                            <th class="text-center border border-dark">Төлбөл зохих</th>
+                            <th class="text-center border border-dark">Нийт төлсөн</th>
+                            <th class="text-center border border-dark">Эцсийн үлдэгдэл</th>
+                            <th class="text-center border border-dark" width="20%">Нэхэмжлэлүүд</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <t t-set="index" t-value="0"/>
+                        <t t-set="inspector_id" t-value="0"/>
+                        <t t-set="apartment_id" t-value="0"/>
+
+                        <t t-set="total_address_count" t-value="0"/>
+
+                        <t t-set="total_pre_month_residual" t-value="0"/>
+                        <t t-set="total_current_invoiced_amount" t-value="0"/>
+                        <t t-set="total_total_paid_amount" t-value="0"/>
+                        <t t-set="total_last_month_residual" t-value="0"/>
+
+                        <t t-set="apartment_count" t-value="0"/>
+                        <t t-set="address_count" t-value="0"/>
+
+                        <t t-set="total_pre_month_residual_by_inspector" t-value="0"/>
+                        <t t-set="total_current_invoiced_amount_by_inspector" t-value="0"/>
+                        <t t-set="total_total_paid_amount_by_inspector" t-value="0"/>
+                        <t t-set="total_last_month_residual_by_inspector" t-value="0"/>
+
+                        <t t-foreach="data_section_1" t-as="data">
+                            <t t-if="inspector_id!=data.get('inspector_id') and index > 0">
+                                <tr>
+                                    <td></td>
+                                    <td><t t-esc="apartment_count"/> ш</td>
+                                    <td><t t-esc="address_count"/> ш</td>
+                                    <td></td>
+                                    <th>
+                                        <t t-esc="total_pre_month_residual_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </th>
+                                    <th>
+                                        <t t-esc="total_current_invoiced_amount_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </th>
+                                    <th>
+                                        <t t-esc="total_total_paid_amount_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </th>
+                                    <th>
+                                        <t t-esc="total_last_month_residual_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                                <t t-set="total_pre_month_residual_by_inspector" t-value="0"/>
+                                <t t-set="total_current_invoiced_amount_by_inspector" t-value="0"/>
+                                <t t-set="total_total_paid_amount_by_inspector" t-value="0"/>
+                                <t t-set="total_last_month_residual_by_inspector" t-value="0"/>
+                                <t t-set="apartment_count" t-value="0"/>
+                                <t t-set="address_count" t-value="0"/>
+                            </t>
+                            <tr t-if="inspector_id!=data.get('inspector_id')" class="border-dark">
+                                <td colspan="9" class="bg-light border-dark">
+                                    <t t-esc="data.get('inspector_name')"/>
+                                    <t t-set="inspector_id" t-value="data.get('inspector_id')"/>
+                                </td>
+                            </tr>
+                            <tr class="border-dark">
+                                <td class="border-dark">
+                                    <t t-esc="data.get('address_code')"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('apartment_code')"/>
+                                </td>
+
+                                <td class="border-dark">
+                                    <t t-esc="data.get('address_address')"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('address_name')"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('pre_month_residual')"  t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('current_invoiced_amount')"  t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('total_paid_amount')"  t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-esc="data.get('last_month_residual')"  t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td class="border-dark">
+                                    <t t-if="data.get('context')">
+                                        <t t-esc="data.get('context').replace(',', ' ')"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>N/A</span> <!-- Default text for None case -->
+                                    </t>
+                                </td>
+                            </tr>
+
+                            <t t-if="data.get('apartment_id')!=apartment_id">
+                                <t t-set="apartment_id" t-value="data.get('apartment_id')"/>
+                                <t t-set="apartment_count" t-value="apartment_count+1"/>
+                            </t>
+                            <t t-set="address_count" t-value="address_count+1"/>
+                            <t t-set="total_address_count" t-value="total_address_count+1"/>
+                            <t t-set="total_pre_month_residual_by_inspector" t-value="total_pre_month_residual_by_inspector + data.get('pre_month_residual')"/>
+                            <t t-set="total_current_invoiced_amount_by_inspector" t-value="total_current_invoiced_amount_by_inspector + data.get('current_invoiced_amount')"/>
+                            <t t-set="total_total_paid_amount_by_inspector" t-value="total_total_paid_amount_by_inspector + data.get('total_paid_amount')"/>
+                            <t t-set="total_last_month_residual_by_inspector" t-value="total_last_month_residual_by_inspector + data.get('last_month_residual')"/>
+
+                            <t t-set="total_pre_month_residual" t-value="total_pre_month_residual+data.get('pre_month_residual')"/>
+                            <t t-set="total_current_invoiced_amount" t-value="total_current_invoiced_amount+data.get('current_invoiced_amount')"/>
+                            <t t-set="total_total_paid_amount" t-value="total_total_paid_amount+data.get('total_paid_amount')"/>
+                            <t t-set="total_last_month_residual" t-value="total_last_month_residual+data.get('last_month_residual')"/>
+
+                            <t t-set="index" t-value="index+1"/>
+
+                        </t>
+                        <tr>
+                            <td></td>
+                            <td><t t-esc="apartment_count"/> ш</td>
+                            <td><t t-esc="address_count"/> ш</td>
+                            <td></td>
+                            <th>
+                                <t t-esc="total_pre_month_residual_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </th>
+                            <th>
+                                <t t-esc="total_current_invoiced_amount_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </th>
+                            <th>
+                                <t t-esc="total_total_paid_amount_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </th>
+                            <th>
+                                <t t-esc="total_last_month_residual_by_inspector" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <tr>
+                                <th></th>
+                                <th><t t-esc="total_apartment_count"/>Ш </th>
+                                <th><t t-esc="total_address_count"/>Ш </th>
+                                <th></th>
+                                <th>
+                                    <t t-esc="total_pre_month_residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </th>
+                                <th>
+                                    <t t-esc="total_current_invoiced_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </th>
+                                <th>
+                                    <t t-esc="total_total_paid_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </th>
+                                <th>
+                                    <t t-esc="total_last_month_residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

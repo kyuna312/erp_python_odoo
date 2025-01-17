@@ -1,0 +1,49 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_counter_list_inspector_report_form" model="ir.ui.view">
+        <field name="name">counter.list.inspector.report.wizard.form</field>
+        <field name="model">counter.list.inspector.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Тоолуурын маягт хайлт" paper="a4-l">
+                <sheet>
+
+                    <group>
+                        <field name="company_id"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="inspector_ids" widget="many2many_tags" placeholder="Байцаагч"/>
+                        </group>
+                        <group>
+                            <field name="counter_list_report_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download" string="Тайлан харах" type="object" class="btn-primary"
+                                icon="fa-download"/>
+                        <button string="Болих" special="cancel" class="btn-secondary" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_counter_list_inspector_report_wizard" model="ir.actions.act_window">
+        <field name="name">Тоолуурын маягт хайлт</field>
+        <field name="res_model">counter.list.inspector.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_counter_list_inspector_report_form"/>
+    </record>
+
+    <!-- QWeb Template -->
+    <record id="action_counter_list_inspector_report" model="ir.actions.report">
+        <field name="name">Тоолуурын маягт хайлт</field>
+        <field name="model">counter.list.inspector.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ub_kontor.template_counter_list_inspector_report</field>
+        <field name="print_report_name">Тайлан - %(user_balance_list_date)s</field>
+    </record>
+</odoo>
+

@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_water_usage_list_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">water.usage.list.pdf.report.wizard.form</field>
+        <field name="model">water.usage.list.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Усны хэмжүүрийн заалтууд хайлт" paper="a4-l">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="water_usage_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download" string="Тайлан харах" type="object" class="btn-primary"
+                                icon="fa-download"/>
+                        <button string="Болих" special="cancel" class="btn-secondary" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_water_usage_list_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Усны хэмжүүрийн заалтууд хайлт</field>
+        <field name="res_model">water.usage.list.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_water_usage_list_pdf_report_wizard_form"/>
+    </record>
+
+    <record id="action_water_usage_list_pdf_report" model="ir.actions.report">
+        <field name="name">Усны хэмжүүрийн заалтууд хайлт</field>
+        <field name="model">water.usage.list.pdf.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ub_kontor.template_water_usage_list</field>
+        <field name="print_report_name">Тайлан - %(user_balance_list_date)s</field>
+    </record>
+</odoo>

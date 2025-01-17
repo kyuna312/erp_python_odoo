@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="action_service_address_xls_reader">
+            <field name="name">Нэмэлт үйлчилгээ xls файлаас оруулах</field>
+            <field name="res_model">service.address.xls.reader</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <record id="view_service_address_xls_reader_form" model="ir.ui.view">
+            <field name="name">service.address.xls.reader.form</field>
+            <field name="model">service.address.xls.reader</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="file"/>
+                            </group>
+                            <group>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <h3>Санамж</h3>
+                        <p>Excel файлын оруулахдаа доорх загварын дагуу файлын форматыг бэлдэж оруулна уу!</p>
+                        <div class="o_list_view mt-3">
+                                <table class="o_list_table" >
+                                    <thead>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Д/д</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Байр</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Тоот</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Он</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Сар</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Байгууллага</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Үйлчилгээ</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Утга</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Үнэ</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Өдөр</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">НӨАТ тооцох</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Тайлбар</th>
+                                    </thead>
+                                </table>
+                            </div>
+                    </sheet>
+                    <footer>
+                        <button name="import_file" string="Файл оруулах" class="btn-primary" type="object"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

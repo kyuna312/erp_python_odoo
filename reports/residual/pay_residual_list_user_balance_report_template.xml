@@ -1,0 +1,162 @@
+<odoo>
+  <template id="template_pay_residual_user_list_balance">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4 landscape !important; margin: 20mm !important; }
+        body, .page, .header, .footer {
+        font-family: Arial, sans-serif !important;
+        font-size: 12px !important;
+        color: #333;
+        }
+        .dotted-line {
+        border-bottom: 1px dotted black !important;
+        display: inline-block !important;
+        width: 150px !important;
+        margin-left: 150px !important;
+        }
+        .content { margin: 10px; }
+        .table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .table th, .table td { padding: 8px; border: 1px solid #ddd; word-wrap: break-word; }
+        .table th { background-color: #f2f2f2; text-align: left; }
+        .text-end { text-align: right; }
+        .text-start { text-align: left; }
+        .inspector-row { background-color: #e0e0e0; font-weight: bold; width: 100%; }
+        .total-row { background-color: #f9f9f9; font-weight: bold; width: 100%; }
+        .alternate-row { background-color: #f9f9f9; }
+        .page-header, .page-footer { font-size: 13px; margin-bottom: 10px; }
+        .header, .footer { margin-bottom: 20px; }
+        .footer p { margin: 5px 0; }
+        .bold { font-weight: bold; }
+      </style>
+
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-2 page-header">
+          <div class="col-6">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" style="width: 100px; height: auto;"/>
+            </t>
+          </div>
+          <div class="col-6 text-end">
+            <p class="mb-0 fw-bold">
+              <t t-esc="company_name"/>
+              <t t-esc="user_balance_list_date "/>
+              сарын Үлдэгдэлтэй хэрэглэгчдийн жагсаалт
+            </p>
+          </div>
+        </div>
+
+        <div class="row pb-2">
+          <div class="col-4">
+            <p class="mb-0">Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+          </div>
+          <div class="col-8 text-end">
+            <p class="mb-0">Тайлан гаргасан:
+              <t t-esc="report_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table">
+          <tbody>
+            <t t-set="last_inspector" t-value="''"/>
+
+            <!-- Loop through grouped data -->
+            <t t-foreach="grouped_data.items()" t-as="inspector_data">
+              <t t-set="current_inspector" t-value="inspector_data[1][0]['inspector_name']"/>
+
+              <t t-if="current_inspector != last_inspector and any(row.get('invoice_count', 0) for row in inspector_data[1])">
+                <tr class="inspector-row">
+                  <td colspan="100%">
+                    <t t-esc="current_inspector"/>
+                  </td>
+                </tr>
+                <t t-set="last_inspector" t-value="current_inspector"/>
+              </t>
+
+              <!-- Data Rows -->
+
+              <tr class="alternate-row" t-if="any(row.get('invoice_count', 0) > 0 for row in inspector_data[1])">
+
+                <t t-set="row_items" t-value="[]"/>
+                <!-- Loop through inspector data and group items into rows -->
+                <t t-foreach="inspector_data[1]" t-as="row">
+                  <t t-if="row.get('invoice_count', 0)">
+                    <t t-set="row_items" t-value="row_items + [row]"/>
+                    <!-- When row_items reaches 10 items, render a new row -->
+                    <t t-if="len(row_items) == 10">
+                      <tr>
+                        <t t-foreach="row_items" t-as="item">
+                          <td>
+                            <t t-esc="item['apartment_name']"/>
+                            -
+                            <t t-esc="item['address_name']"/>
+                            <t t-if="item.get('invoice_count', 0) != 1">
+                              (<t t-esc="item.get('invoice_count', 0)"/>)
+                            </t>
+                          </td>
+                        </t>
+                      </tr>
+                      <t t-set="row_items" t-value="[]"/>
+                    </t>
+                  </t>
+                </t>
+
+                <!-- Render remaining items if fewer than 5 -->
+                <t t-if="len(row_items) > 0">
+                  <tr>
+                    <t t-foreach="row_items" t-as="item">
+                      <td>
+                        <t t-esc="item['apartment_name']"/>
+                        -
+                        <t t-esc="item['address_name']"/>
+                        (<t t-esc="item.get('invoice_count', 0)"/>)
+                      </td>
+                    </t>
+                  </tr>
+                </t>
+              </tr>
+
+
+              <!-- Totals Row -->
+              <t t-if="any(row.get('invoice_count', 0) > 0 for row in inspector_data[1])"> <!-- Only show totals if there is any valid invoice count -->
+                <tr class="total-row">
+                  <td colspan="100%" class="text-start">
+                    <p>Нийт үлдэгдэлтэй өрхийн тоо:
+                      <t t-esc="len([row for row in inspector_data[1] if row.get('invoice_count', 0) >= 1])"/>
+                    </p>
+                    <p>Үүнээс давхар сартай өрхийн тоо:
+                      <t t-esc="len([row for row in inspector_data[1] if row.get('invoice_count', 0) == 2])"/>
+                    </p>
+                    <p>Үүнээс 3-с дээш сартай өрхийн тоо:
+                      <t t-esc="len([row for row in inspector_data[1] if row.get('invoice_count', 0) >= 3])"/>
+                    </p>
+                  </td>
+                </tr>
+              </t>
+
+            </t>
+          </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <div class="row pt-2 page-footer text-end">
+          <div class="col-12">
+            <p>
+              <strong>Тайлан гаргасан:</strong>
+              <span class="dotted-line"/>
+            </p>
+            <p>
+              <strong>Хянасан:</strong>
+              <span class="dotted-line"/>
+            </p>
+          </div>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>
+

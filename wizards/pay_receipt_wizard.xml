@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pay_receipt_wizard_form" model="ir.ui.view">
+            <field name="name">pay.receipt.wizard.form</field>
+            <field name="model">pay.receipt.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="pay_receipt_id" options="{'no_create': True}"/>
+                                <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="method" />
+                                <field name="inspector_id" attrs="{'invisible': [['method', 'not in', ['inspector',]]], 'required': [['method', '=', 'inspector']]}" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="apartment_ids" attrs="{'invisible': [['method', 'not in', ['apartment',]]], 'required': [['method', '=', 'apartment']]}" widget="many2many_tags" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Үүсгэх" name="create_pay_recipt_line" type="object" class="btn-primary" confirm="Мөр үүсгэхдээ итгэлтэй байна уу?"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_pay_receipt_wizard" model="ir.actions.act_window">
+            <field name="name">Дулааны тоолуур тоолуур</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pay.receipt.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

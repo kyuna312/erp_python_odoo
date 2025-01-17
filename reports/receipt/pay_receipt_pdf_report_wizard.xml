@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Paper format definition -->
+    <record id="paperformat_custom_a4_landscape" model="report.paperformat">
+        <field name="name">Custom A4 Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">5</field> <!-- Set top margin to 5 mm -->
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/> <!-- Optionally disable header line if not needed -->
+        <field name="header_spacing">0</field> <!-- Adjust header spacing if necessary -->
+        <field name="dpi">90</field> <!-- Set output DPI for better resolution -->
+    </record>
+
+
+    <!-- Report Action -->
+    <record id="action_pay_receipt_pdf_report" model="ir.actions.report">
+        <field name="name">Төлбөл зохих тайлан</field>
+        <field name="model">pay.receipt</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.template_pay_receipt_pdf_report</field>
+        <field name="print_report_name">'Тайлан - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_pay_receipt"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_custom_a4_landscape"/>
+    </record>
+
+    <!-- Action to Open the Wizard -->
+    <record id="action_pay_receipt_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Төлбөл зохих хөлсний мэдээ</field>
+        <field name="res_model">pay.receipt.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_pay_receipt_pdf_report_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Form View for the Wizard -->
+    <record id="view_pay_receipt_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">pay.receipt.pdf.report.wizard.form</field>
+        <field name="model">pay.receipt.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Төлбөл зохих тайлан">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="address_type" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="pay_receipt_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Тайлан харах" type="object" name="download_pdf" class="btn-primary"/>
+                        <button string="Болих" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

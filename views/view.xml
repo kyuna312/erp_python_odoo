@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <record id="report_writeoff_debit_wizard_action" model="ir.actions.act_window">-->
+<!--		<field name="name">Хасалтын файл бэлдэх форм</field>-->
+<!--		<field name="res_model">report.writeoff.debit.wizard</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--		<field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--   </record>-->
+</odoo>

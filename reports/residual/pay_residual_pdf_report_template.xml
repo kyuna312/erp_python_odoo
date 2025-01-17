@@ -1,0 +1,152 @@
+<odoo>
+    <template id="template_pay_residual_pdf_report">
+        <t t-call="web.basic_layout">
+            <style>
+                @page { size: A4 landscape !important; margin: 20mm !important; }
+                .page, .header, .footer { font-family: Arial, sans-serif !important; font-size: 12px !important; }
+                .dotted-line { border-bottom: 1px dotted black !important; display: inline-block !important; width: 150px !important; margin-left: 150px !important; }
+                .content { margin: 10px; }
+                .table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                .table th, .table td { padding: 5px; border: 1px solid #ddd; word-wrap: break-word; }
+                .text-end { text-align: right; }
+                .text-center { text-align: center; }
+                .text-start { text-align: left; }
+                .fw-bold { font-weight: bold; }
+                .inspector-row { background-color: #f5f5f5; }
+            </style>
+            <div class="page content">
+                <!-- Header Section -->
+                <div class="row pb-2">
+                    <div class="col-4">
+                        <t t-if="logo_data_uri">
+                            <img t-att-src="logo_data_uri" style="width: 100px;" />
+                        </t>
+                    </div>
+                    <div class="col-8 text-end">
+                        <p class="mb-0 fw-bold" style="font-size: 13px;">
+                            <t t-esc="company_name" /> -ын <t t-esc="residual_date" /> оны үлдэгдлийн товч тайлан
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Address and Date Section -->
+                <div class="row pb-2">
+                    <div class="col-4">
+                        <p class="mb-0" style="font-size: 13px;">Төрөл: <t t-esc="address_type" /></p>
+                    </div>
+                    <div class="col-8 text-end">
+                        <p class="mb-0" style="font-size: 13px;">Тайлан гаргасан: <t t-esc="date" /></p>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <table class="table">
+                    <thead>
+                        <tr class="inspector-row">
+                            <th rowspan="2" class="align-middle text-center" style="padding-top: 5px; padding-bottom: 5px;">Код</th>
+                            <th rowspan="2" class="align-middle text-center" style="padding-top: 5px; padding-bottom: 5px;">Байцаагч</th>
+                            <th colspan="2">Эхний үлдэгдэл</th>
+                            <th colspan="4">Төлбөл зохих</th>
+                            <th colspan="2">Нийт төлөх</th>
+                            <th colspan="2">Төлсөн</th>
+                            <th colspan="2">Эцсийн үлдэгдэл</th>
+                            <th colspan="2">Гүйцэтгэл</th>
+                            <th colspan="2">Давхар сартай</th>
+                        </tr>
+                        <tr class="inspector-row">
+                            <th>Х.Тоо</th>
+                            <th>Дүн</th>
+                            <th>Х.Тоо</th>
+                            <th>Х.Төлбөл зохих</th>
+                            <th>Төрийн хөнгөлөлт</th>
+                            <th>Нийт Төлбөл зохих</th>
+                            <th>Х.Тоо</th>
+                            <th>Дүн</th>
+                            <th>Х.Тоо</th>
+                            <th>Дүн</th>
+                            <th>Х.Тоо</th>
+                            <th>Дүн</th>
+                            <th>Тоо хувь</th>
+                            <th>₮ хувь</th>
+                            <th>2 сар</th>
+                            <th>3-с их</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Transaction Header -->
+                        <tr class="inspector-row">
+                            <td colspan="20" class="fw-bold text-start">Үндсэн гүйлгээ</td>
+                        </tr>
+
+                        <!-- Main Data Rows -->
+                        <t t-foreach="grouped_data.items()" t-as="inspector_data">
+                            <tr>
+                                <td><t t-esc="inspector_data[1]['inspector_id']"/></td>
+                                <td><t t-esc="inspector_data[1]['inspector_name']"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['first_balance_user_count']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['first_balance']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['pay_receipt_count']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['pay_receipt_amount']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['pay_receipt_state_subsidy']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['pay_receipt_amount']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['total_pay_user_count']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['total_pay_amount']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['total_paid_user_count']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['total_paid_amount']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['last_balance_user_count']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['last_balance_amount']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end">
+                                    <t t-set="value1" t-value="inspector_data[1]['total_paid_user_count']" />
+                                    <t t-set="value2" t-value="inspector_data[1]['total_pay_user_count']" />
+                                    <t t-options="{'widget': 'float', 'precision': 2}" t-esc="(value1 / value2 * 100) if value2 != 0 and value1 != 0 and (value1 / value2 * 100) &lt;= 100 else (0 if value1 == 0 and value2 == 0 else 0)" />
+                                </td>
+                                <td class="text-end">
+                                    <t t-set="value1" t-value="inspector_data[1]['total_paid_amount']" />
+                                    <t t-set="value2" t-value="inspector_data[1]['total_pay_amount']" />
+                                    <t t-options="{'widget': 'float', 'precision': 2}" t-esc="(value1 / value2 * 100) if value2 != 0 and value1 != 0 and (value1 / value2 * 100) &lt;= 100 else (0 if value1 == 0 and value2 == 0 else 0)" />
+                                </td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['two_months']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                <td class="text-end"><t t-esc="inspector_data[1]['more_months']" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            </tr>
+                        </t>
+                        <tr class="fw-bold inspector-row">
+                            <td colspan="2" class="text-start">Үндсэн гүйлгээ-нийт:</td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['first_balance_user_count'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['first_balance'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['pay_receipt_count'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['pay_receipt_amount'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['pay_receipt_state_subsidy'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['pay_receipt_amount'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['total_pay_user_count'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['total_pay_amount'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['total_paid_user_count'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['total_paid_amount'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['last_balance_user_count'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['last_balance_amount'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end">
+                                <t t-set="value1" t-value="sum([inspector_data[1]['total_paid_user_count'] for inspector_data in grouped_data.items()])" />
+                                <t t-set="value2" t-value="sum([inspector_data[1]['total_pay_user_count'] for inspector_data in grouped_data.items()])" />
+                                <t t-options="{'widget': 'float', 'precision': 2}" t-esc="(value1 / value2 * 100) if value2 != 0 and value1 != 0 and (value1 / value2 * 100) &lt;= 100 else (0 if value1 == 0 and value2 == 0 else 0)" />
+                            </td>
+                            <td class="text-end">
+                                <t t-set="value1" t-value="sum([inspector_data[1]['total_paid_amount'] for inspector_data in grouped_data.items()])" />
+                                <t t-set="value2" t-value="sum([inspector_data[1]['total_pay_amount'] for inspector_data in grouped_data.items()])" />
+                                <t t-options="{'widget': 'float', 'precision': 2}" t-esc="(value1 / value2 * 100) if value2 != 0 and value1 != 0 and (value1 / value2 * 100) &lt;= 100 else (0 if value1 == 0 and value2 == 0 else 0)" />
+                            </td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['two_months'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                            <td class="text-end"><t t-esc="sum([inspector_data[1]['more_months'] for inspector_data in grouped_data.items()])" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Footer Section -->
+                <div class="row pt-2">
+                    <div class="col-12 text-end">
+                        <p class="mb-2 mr-10"><strong>Тайлан гаргасан:</strong> <span class="dotted-line"/></p>
+                        <p class="mb-2 mr-10"><strong>Хянасан:</strong> <span class="dotted-line"/></p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

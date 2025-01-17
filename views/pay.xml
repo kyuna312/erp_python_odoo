@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+
+    <!--        <function model="pay.receipt" name="create_procedure"/>-->
+
+    <function model="qpay.invoice" name="initial"/>
+    <record id="view_pay_receipt_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.tree</field>
+      <field name="model">pay.receipt</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false">
+          <field name="year"/>
+          <field name="month"/>
+          <field name="company_id" options="{'no_create': True}"/>
+          <field name="state"/>
+          <field name="name"/>
+          <field name="total_amount_by_service" groups="base.group_system"/>
+          <field name="total_amount_by_address" groups="base.group_system"/>
+          <field name="diff_amount" groups="base.group_system"/>
+          <button name="show_address_with_difference" type="object" string="Зөрүүтэй тоот харах" class="btn-primary" groups="base.group_system"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_form" model="ir.ui.view">
+      <field name="name">pay.receipt.form</field>
+      <field name="model">pay.receipt</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="show_details_by_service" type="object" string="Үйлчилгээгээр харах"
+                    class="btn-primary" icon="fa-search"/>
+            <button name="show_details_by_address" type="object" string="Тоотоор харах" class="btn-primary"
+                    icon="fa-search"/>
+            <button name="create_receipt_address" string="Мөр үүсгэх" type="object" class="btn-primary"
+                    states="draft" groups="ub_kontor.group_kontor_accountant"/>
+            <button name="create_invoice" string="Нэхэмжлэл үүсгэх" type="object" class="btn-primary"
+                    states="confirmed" icon="fa-plus-square-o" groups="ub_kontor.group_kontor_accountant"/>
+            <button name="confirm" string="Батлах" type="object" class="btn-primary" states="draft"
+                    icon="fa-check" groups="ub_kontor.group_kontor_accountant"/>
+            <button name="draft" string="Ноороглох" type="object" class="btn-primary"
+                    states="confirmed,invoice_created,cancelled" groups="ub_kontor.group_kontor_accountant"/>
+            <button name="cancel" string="Цуцлах" type="object" class="btn-secondary" states="draft"
+                    icon="fa-ban" groups="ub_kontor.group_kontor_senior_accountant"/>
+            <button name="delete_row" string="Мөр устгах" type="object" class="btn-secondary"
+                    states="draft,cancelled"
+                    confirm="Төлбөрийн баримтын мөрийг устгахдаа итгэлтэй байна уу ?" icon="fa-trash-o"
+                    groups="ub_kontor.group_kontor_accountant"/>
+            <button name="action_get_bank_json" type="object" class="btn-primary"
+                    string="Банкны json файл татах" icon="fa-file-archive-o"  states="draft,confirmed,invoice_created"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <separator string="Төлбөрийн баримт"/>
+            <field name="process" widget="progressbar"/>
+            <group>
+              <group>
+                <field name="year"/>
+                <field name="month"/>
+                <field name="address_type"/>
+              </group>
+              <group>
+                <field name="company_id" options="{'no_create': True}"/>
+                <field name="name"/>
+                <button name="get_xls_report" string="Excel файл татах" type="object"
+                        class="btn-primary"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Мөр">
+                <field name="receipt_address_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                  <tree default_order="apartment_code, address_address asc" export_xlsx="false">
+                    <!--                                        <field name="address_id" options="{'no_create': True}"/>-->
+                    <field name="apartment_code"/>
+                    <field name="address_address"/>
+                    <field name="amount" sum="Дүн"/>
+                    <field name="noat" sum="НӨАТ"/>
+                    <field name="total_amount" sum="Нийт дүн"/>
+                    <field name="state"/>
+                    <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object"
+                            class="btn-primary"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Үүсээгүй байрнууд">
+                <field name="uncreated_address_ids">
+                  <tree export_xlsx="false">
+                    <field name="full_name"/>
+                    <field name="town"/>
+                    <field name="name"/>
+                    <!--                                        <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>-->
+                    <field name="kontor"/>
+                    <field name="corps"/>
+                    <field name="active"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Өөрчлөгдөх өдрүүд">
+                <button name="change_days" string="Хоног өөрчлөх" type="object" class="btn-primary"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+
+                <field name="day_adjustment_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                  <tree export_xlsx="false">
+                    <!--                                        <field name="apartment_ids" widget="many2many_tags"/>-->
+                    <!--                                        <field name="address_ids" widget="many2many_tags"/>-->
+                    <field name="apartment_count"/>
+                    <field name="address_count"/>
+                    <field name="days_of_pure_water"/>
+                    <field name="days_of_impure_water"/>
+                    <field name="days_of_heating"/>
+                    <field name="days_of_hot_water"/>
+                    <field name="description"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_pay_receipt" model="ir.actions.act_window">
+      <field name="name">Төлбөрийн баримт</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_ids" eval="[(5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_pay_receipt_tree')}),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('view_pay_receipt_form')})
+    ]"/>
+    </record>
+
+    <record id="view_pay_receipt_address_graph" model="ir.ui.view">
+      <field name="name">pay.receipt.address.graph</field>
+      <field name="model">pay.receipt.address</field>
+      <field name="arch" type="xml">
+        <graph>
+          <field name="apartment_id"/>
+          <field name="amount" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_search" model="ir.ui.view">
+      <field name="name">pay.receipt.address.search</field>
+      <field name="model">pay.receipt.address</field>
+      <field name="arch" type="xml">
+        <search>
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="apartment_id" options="{'no_create': True}"/>-->
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+          <group expand="0" string="Group By...">
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]"
+                    context="{'group_by':'inspector_id'}"/>
+            <filter string="Байр" name="apartment_id_group" domain="[]"
+                    context="{'group_by':'apartment_id'}"/>
+          </group>
+          <!-- <searchpanel>
+              <field name="duureg_id" options="{'no_create': True}"/>
+              <field name="horoo_id" options="{'no_create': True}"/>
+          </searchpanel> -->
+        </search>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.address.tree</field>
+      <field name="model">pay.receipt.address</field>
+      <field name="arch" type="xml">
+        <tree default_order="apartment_code, address_address asc" export_xlsx="false">
+          <!--                    <header>-->
+          <!--                        <button name="create_invoice" type="object" string="Нэхэмжлэл үүсгэх" class="btn-primary"/>-->
+          <!--                        <button name="post_invoice" type="object" string="Нэхэмжлэл батлах" class="btn-primary"/>-->
+          <!--                    </header>-->
+          <!--                    <field name="apartment_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <header>
+            <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object"
+                    class="btn-primary"/>
+          </header>
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="amount" sum="Дүн"/>
+          <field name="noat" sum="НӨАТ"/>
+          <field name="total_amount" sum="Нийт дүн"/>
+          <field name="state"/>
+          <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+          <!--                    <field name="invoice_id" options="{'no_create': True}"/>-->
+          <field name="receipt_id" invisible="1" options="{'no_create': True}"/>
+
+          <field name="horoo_id" invisible="1" options="{'no_create': True}"/>
+          <field name="duureg_id" invisible="1" options="{'no_create': True}"/>
+          <field name="partner_id" invisible="1" options="{'no_create': True}"/>
+          <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object"
+                  class="btn-primary"/>
+
+        </tree>
+      </field>
+    </record>
+    <record id="view_pay_receipt_address_form" model="ir.ui.view">
+      <field name="name">pay.receipt.address.form</field>
+      <field name="model">pay.receipt.address</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object"
+                    class="btn-primary"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="address_id" options="{'no_create': True}"
+                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="receipt_id" options="{'no_create': True}"
+                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+              <group>
+                <field name="counter_qty" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="family" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="noat" readonly="1"/>
+                <field name="amount" readonly="1"/>
+                <field name="total_amount" readonly="1"/>
+
+                <field name="noat" invisible="1"/>
+                <field name="amount" invisible="1"/>
+                <field name="total_amount" invisible="1"/>
+                <!--                                <field name="invoice_id" options="{'no_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+              </group>
+            </group>
+            <notebook>
+              <page string="Задаргаа">
+                <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                  <tree editable="bottoms" export_xlsx="false">
+                    <field name="name"/>
+                    <field name="service_type_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="uom_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="price" invisible="1"/>
+                    <field name="usage"/>
+                    <field name="transition_coef"/>
+                    <field name="days"/>
+                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="price" readonly="1"/>
+                    <field name="price" invisible="1"/>
+                    <field name="amount" sum="Дүн"/>
+                    <field name="noat" sum="НӨАТ"/>
+                    <field name="total_amount" sum="Нийт дүн" readonly="1"/>
+                    <field name="total_amount" sum="Нийт дүн" invisible="1"/>
+                    <field name="now_counter" invisible="1"/>
+                    <field name="last_counter" invisible="1"/>
+                    <field name="difference_counter" invisible="1"/>
+                    <field name="fraction_counter" invisible="1"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="action_pay_receipt_address" model="ir.actions.act_window">
+      <field name="name">Төлбөрийн баримт (Тоот)</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt.address</field>
+      <field name="view_mode">tree,form,graph</field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_search" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.search</field>
+      <field name="model">pay.receipt.address.line</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <!--                    <field name="address_id"/>-->
+          <field name="service_type_id"/>
+          <group expand="0" string="Group By...">
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]"
+                    context="{'group_by':'inspector_id'}"/>
+            <filter string="Байр" name="apartment_id_group" domain="[]"
+                    context="{'group_by':'apartment_id'}"/>
+            <filter string="Үйлчилгээний төрөл" name="service_type_id_group" domain="[]"
+                    context="{'group_by':'service_type_id'}"/>
+            <filter string="Тариф" name="pricelist_id_group" domain="[]"
+                    context="{'group_by':'pricelist_id'}"/>
+            <filter string="Нэр" name="name_group" domain="[]" context="{'group_by':'name'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_graph" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.graph</field>
+      <field name="model">pay.receipt.address.line</field>
+      <field name="arch" type="xml">
+        <graph>
+          <field name="total_amount" type="measure"/>
+          <field name="service_type_id"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.tree</field>
+      <field name="model">pay.receipt.address.line</field>
+      <field name="arch" type="xml">
+        <tree default_order="apartment_code, address_address asc" export_xlsx="false">
+          <field name="name"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="apartment_id" invisible="1" options="{'no_create': True}"/>-->
+          <field name="inspector_id" invisible="1" options="{'no_create': True, 'no_open': True}"/>
+          <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="company_id" options="{'no_create': True}"/>
+          <field name="year"/>
+          <field name="month"/>
+          <field name="price" sum="Үнэ"/>
+          <field name="uom_id" options="{'no_create': True}"/>
+          <field name="days"/>
+          <field name="days_changed"/>
+          <field name="amount" sum="Дүн"/>
+          <field name="total_amount" sum="Нийт дүн"/>
+          <field name="pricelist_days"/>
+          <field name="service_deduction_group_id" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_receipt_address_line" model="ir.actions.act_window">
+      <field name="name">Төлбөрийн баримтын задаргаа</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt.address.line</field>
+      <field name="view_mode">tree,form,graph</field>
+    </record>
+    <record id="account_move_kontor_inherit_tree" model="ir.ui.view">
+      <field name="name">account.move.kontor.inherit.tree</field>
+      <field name="model">account.move</field>
+      <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="after">
+          <field name="nc_year" invisible="1"/>
+          <field name="nc_month" invisible="1"/>
+          <field name="auto_pay" invisible="1"/>
+          <field name="receipt_address_id" invisible="1"/>
+          <field name="posted_date"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="pay_receipt_send_sms_cron" model="ir.cron">
+      <field name="name">Төлбөрийн баримт мессеж илгээх</field>
+      <field name="model_id" ref="model_pay_receipt"/>
+      <field name="state">code</field>
+      <field name="code">model.send_sms()</field>
+      <field name="interval_number">12</field> <!-- Run every day -->
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field> <!-- Run indefinitely -->
+      <field name="doall" eval="False"/>
+      <field name="active" eval="False"/>
+    </record>
+
+
+    <record id="kontor_inherit_account_payment_view_form" model="ir.ui.view">
+      <field name="name">kontor.account.payment.inherit.form.view</field>
+      <field name="model">account.payment</field>
+      <field name="inherit_id" ref="account.view_account_payment_form"/>
+      <field name="priority">10</field>
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='group3']" position="after">
+          <group name="group4">
+            <field name="paid_user_type"
+                   attrs="{'required': [('state', '=', 'posted'), ('partner_type', '=', 'customer'), ('is_internal_transfer', '=', False)]}"/>
+            <field name="paid_user_register" attrs="{'required': [('paid_user_type', '=', 'AAN')]}"/>
+            <field name="email"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="kontor_inherit_account_payment_register_view_form" model="ir.ui.view">
+      <field name="name">kontor.account.payment.register.inherit.form.view</field>
+      <field name="model">account.payment.register</field>
+      <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+      <field name="arch" type="xml">
+        <!--                   <xpath expr="//field[@name='partner_bank_id']" position="after">-->
+        <!--                        <field name="paid_user_type"/>-->
+        <!--                        <field name="paid_user_register" attrs="{'required': [('paid_user_type', '=', 'AAN')]}"/>-->
+        <!--                        <field name="email" attrs="{'required': [('paid_user_type', '=', 'AAN')]}"/>-->
+        <!--                    </xpath>-->
+        <xpath expr="//group[@name='group3']" position="after">
+          <group name="group4">
+            <field name="paid_user_type"/>
+            <field name="paid_user_register" attrs="{'required': [('paid_user_type', '=', 'AAN')]}"/>
+            <field name="email" attrs="{'required': [('paid_user_type', '=', 'AAN')]}"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+    <!--        <record id="enter_paid_status_cron" model="ir.cron">-->
+    <!--            <field name="name">Нэхэмжлэлт төлсөн төлөвт оруулах (Контор)</field>-->
+    <!--            <field name="model_id" ref="model_account_move"/>-->
+    <!--            <field name="state">code</field>-->
+    <!--            <field name="code">model.enter_paid_status_cron()</field>-->
+    <!--            <field name="interval_number">2</field> &lt;!&ndash; Run every day &ndash;&gt;-->
+    <!--            <field name="interval_type">hours</field>-->
+    <!--            <field name="numbercall">-1</field> &lt;!&ndash; Run indefinitely &ndash;&gt;-->
+    <!--            <field name="doall" eval="False"/>-->
+    <!--            <field name="active" eval="True"/>-->
+    <!--        </record>-->
+
+    <record id="view_pay_receipt_days_adjustments_form" model="ir.ui.view">
+      <field name="name">pay.receipt.days.adjustments</field>
+      <field name="model">pay.receipt.days.adjustments</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <!--                                <field name="receipt_id" invisible="1" options="{'no_create': True}"/>-->
+                <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                <field name="apartment_ids" widget="many2many_tags"/>
+                <field name="address_ids" widget="many2many_tags"/>
+                <field name="description"/>
+              </group>
+              <group>
+                <field name="days_of_pure_water"/>
+                <field name="days_of_impure_water"/>
+                <field name="days_of_heating"/>
+                <field name="days_of_hot_water"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

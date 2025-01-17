@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_pay_receipt_address_invoice_search" model="ir.actions.act_window">
+            <field name="name">Нэхэмжлэл хайх</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pay.receipt.address.invoice.search</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <record id="pay_receipt_address_invoice_form" model="ir.ui.view">
+            <field name="name">pay.receipt.address.invoice.form</field>
+            <field name="model">pay.receipt.address.invoice.search</field>
+            <field name="arch" type="xml">
+                <form>'
+                    <sheet>
+                        <group>
+                            <field name="inspector_ids" widget="many2many_checkboxes"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="search_invoice" type="object" string="Хайх" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <menuitem id="pay_receipt_address_invoice_search_main_menu" name="Нэхэмжлэл хайх (Байцаагчаар)" sequence="1"
+                  parent="menu_account"
+                  action="action_pay_receipt_address_invoice_search"
+        />
+    </data>
+</odoo>

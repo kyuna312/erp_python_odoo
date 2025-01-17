@@ -1,0 +1,1276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--        &lt;!&ndash; Tree View for Hut &ndash;&gt;-->
+        <!--        <record models="ir.ui.view" id="hut_tree_view">-->
+        <!--            <field name="name">ref.hut.tree</field>-->
+        <!--            <field name="models">ref.hut</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <tree export_xlsx="false" string="Hut List">-->
+        <!--                    <field name="code"/>-->
+        <!--                    <field name="name"/>-->
+        <!--                    <field name="phone"/>-->
+        <!--                    <field name="description"/>-->
+        <!--                    <field name="active"/>-->
+        <!--                </tree>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <!--        &lt;!&ndash; Form View for Hut &ndash;&gt;-->
+        <!--        <record models="ir.ui.view" id="hut_form_view">-->
+        <!--            <field name="name">ref.hut.form</field>-->
+        <!--            <field name="models">ref.hut</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <form string="Hut">-->
+        <!--                    <sheet>-->
+        <!--                        <group>-->
+        <!--                            <field name="code"/>-->
+        <!--                            <field name="name"/>-->
+        <!--                            <field name="phone"/>-->
+        <!--                            <field name="description"/>-->
+        <!--                            <field name="active"/>-->
+        <!--                        </group>-->
+        <!--                    </sheet>-->
+        <!--                </form>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <!--        &lt;!&ndash; Action to Open Tree and Form Views &ndash;&gt;-->
+        <!--        <record models="ir.actions.act_window" id="action_hut">-->
+        <!--            <field name="name">Hut</field>-->
+        <!--            <field name="res_model">ref.hut</field>-->
+        <!--            <field name="view_mode">tree,form</field>-->
+        <!--        </record>-->
+        <record id="view_ref_organization_search" model="ir.ui.view">
+            <field name="name">ref.organization.search</field>
+            <field name="model">ref.organization</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Tree View for Organization -->
+        <record model="ir.ui.view" id="organization_tree_view">
+            <field name="name">ref.organization.tree</field>
+            <field name="model">ref.organization</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Organization List">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Organization -->
+        <record model="ir.ui.view" id="organization_form_view">
+            <field name="name">ref.organization.form</field>
+            <field name="model">ref.organization</field>
+            <field name="arch" type="xml">
+                <form string="Organization">
+                    <sheet>
+                        <separator string="Байгууллага"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_organization">
+            <field name="name">Байгууллага</field>
+            <field name="res_model">ref.organization</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_ref_service_type_search" model="ir.ui.view">
+            <field name="name">ref.service.type.search</field>
+            <field name="model">ref.service.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="tr_type"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        <!-- Tree View for ServiceType -->
+        <record model="ir.ui.view" id="service_type_tree_view">
+            <field name="name">ref.service.type.tree</field>
+            <field name="model">ref.service.type</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Service Type List">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="org_id" options="{'no_create': True}"/>
+                    <field name="category"/>
+                    <field name="tr_type"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for ServiceType -->
+        <record model="ir.ui.view" id="service_type_form_view">
+            <field name="name">ref.service.type.form</field>
+            <field name="model">ref.service.type</field>
+            <field name="arch" type="xml">
+                <form string="Service Type">
+                    <sheet>
+                        <separator string="Үйлчилгээний төрөл"/>
+                        <group>
+                            <group>
+                                <field name="org_id" options="{'no_create': True}"/>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="active"/>
+                                <field name="category"/>
+                                <field name="tr_type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_service_type">
+            <field name="name">Үйлчилгээний төрөл</field>
+            <field name="res_model">ref.service.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_ref_pricelist_search" model="ir.ui.view">
+            <field name="name">ref.pricelist.search</field>
+            <field name="model">ref.pricelist</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        <!-- Tree View for PriceList -->
+        <record model="ir.ui.view" id="pricelist_tree_view">
+            <field name="name">ref.pricelist.tree</field>
+            <field name="model">ref.pricelist</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Price List">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="org_id" options="{'no_create': True}"/>
+                    <field name="service_type_id" options="{'no_create': True}"/>
+                    <field name="address_type"/>
+                    <field name="category"/>
+                    <field name="type_id" options="{'no_create': True}"/>
+                    <field name="price"/>
+                    <field name="uom_id" options="{'no_create': True}"/>
+                    <field name="code"/>
+                    <field name="days"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for PriceList -->
+        <record model="ir.ui.view" id="pricelist_form_view">
+            <field name="name">ref.pricelist.form</field>
+            <field name="model">ref.pricelist</field>
+            <field name="arch" type="xml">
+                <form string="Price List">
+                    <sheet>
+                        <separator string="Тариф"/>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="org_id" options="{'no_create': True}"/>
+                                <field name="service_type_id" options="{'no_create': True}"/>
+                                <field name="address_type"/>
+                            </group>
+                            <group>
+                                <field name="category"/>
+                                <field name="type_id" options="{'no_create': True}"/>
+                                <field name="price"/>
+                                <field name="noat_price"/>
+                            </group>
+                            <group>
+                                <field name="total_price"/>
+                                <field name="code"/>
+                                <field name="uom_id" options="{'no_create': True}"/>
+                                <field name="account_income_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <field name="tax_product_code"/>
+                                <field name="classification_code"/>
+                                <field name="days"/>
+                                <field name="report_type"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+            <!--      <field name="arch" type="xml">-->
+            <!--        <form string="Price List">-->
+            <!--          <sheet>-->
+            <!--            <separator string="Тариф"/>-->
+            <!--            <group>-->
+            <!--              <field name="name"/>-->
+            <!--              <field name="org_id" options="{'no_create': True}"/>-->
+            <!--              <field name="service_type_id" options="{'no_create': True}"/>-->
+            <!--              <field name="address_type"/>-->
+            <!--              <field name="category"/>-->
+            <!--              <field name="type_id" options="{'no_create': True}"/>-->
+            <!--              <field name="price"/>-->
+            <!--              <field name="noat_price"/>-->
+            <!--              <field name="total_price"/>-->
+            <!--              <field name="code"/>-->
+            <!--              <field name="uom_id" options="{'no_create': True}"/>-->
+            <!--              <field name="account_income_ids" widget="many2many_tags" options="{'no_create': True}"/>-->
+            <!--              <field name="tax_product_code"/>-->
+            <!--              <field name="classification_code"/>-->
+            <!--              <field name="days"/>-->
+            <!--              <field name="report_type"/>-->
+            <!--              <field name="active"/>-->
+            <!--            </group>-->
+            <!--          </sheet>-->
+            <!--        </form>-->
+            <!--      </field>-->
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_pricelist">
+            <field name="name">Үнийн тариф</field>
+            <field name="res_model">ref.pricelist</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--        ref.pricelist.type-->
+        <record model="ir.ui.view" id="pricelist_type_tree_view">
+            <field name="name">ref.pricelist.type.tree</field>
+            <field name="model">ref.pricelist.type</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Price List" editable="top">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_pricelist_type">
+            <field name="name">Үнийн тарифын төрөл</field>
+            <field name="res_model">ref.pricelist.type</field>
+            <field name="view_mode">tree</field>
+        </record>
+        <!-- Tree View for Aimag -->
+        <record model="ir.ui.view" id="aimag_tree_view">
+            <field name="name">ref.aimag.tree</field>
+            <field name="model">ref.aimag</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Aimag List" editable="top">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_ref_aimag_search" model="ir.ui.view">
+            <field name="name">ref.aimag.search</field>
+            <field name="model">ref.aimag</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        <!-- Form View for Aimag -->
+        <record model="ir.ui.view" id="aimag_form_view">
+            <field name="name">ref.aimag.form</field>
+            <field name="model">ref.aimag</field>
+            <field name="arch" type="xml">
+                <form string="Aimag">
+                    <sheet>
+                        <separator string="Аймаг"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_aimag">
+            <field name="name">Аймаг</field>
+            <field name="res_model">ref.aimag</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_duureg_search" model="ir.ui.view">
+            <field name="name">ref.duureg.search</field>
+            <field name="model">ref.duureg</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="full_name"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Tree View for Duureg -->
+        <record model="ir.ui.view" id="duureg_tree_view">
+            <field name="name">ref.duureg.tree</field>
+            <field name="model">ref.duureg</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Duureg List" editable="top">
+                    <field name="name"/>
+                    <field name="aimag_id" options="{'no_create': True}"/>
+                    <field name="code"/>
+                    <field name="short_name"/>
+                    <field name="full_name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Duureg -->
+        <record model="ir.ui.view" id="duureg_form_view">
+            <field name="name">ref.duureg.form</field>
+            <field name="model">ref.duureg</field>
+            <field name="arch" type="xml">
+                <form string="Duureg">
+                    <sheet>
+                        <separator string="Дүүрэг"/>
+                        <group>
+                            <field name="aimag_id" options="{'no_create': True}"/>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="short_name"/>
+                            <field name="full_name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_duureg">
+            <field name="name">Дүүрэг</field>
+            <field name="res_model">ref.duureg</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_horoo_search" model="ir.ui.view">
+            <field name="name">ref.horoo.search</field>
+            <field name="model">ref.horoo</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="full_name"/>
+                    <field name="duureg_id" options="{'no_create': True}"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        <!-- Tree View for Horoo -->
+        <record model="ir.ui.view" id="horoo_tree_view">
+            <field name="name">ref.horoo.tree</field>
+            <field name="model">ref.horoo</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Horoo List" editable="top">
+                    <field name="duureg_id" options="{'no_create': True}"/>
+                    <field name="name"/>
+                    <field name="full_name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Horoo -->
+        <record model="ir.ui.view" id="horoo_form_view">
+            <field name="name">ref.horoo.form</field>
+            <field name="model">ref.horoo</field>
+            <field name="arch" type="xml">
+                <form string="Horoo">
+                    <sheet>
+                        <separator string="Хороо"/>
+                        <group>
+                            <field name="duureg_id" options="{'no_create': True}"/>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_horoo">
+            <field name="name">Хороо</field>
+            <field name="res_model">ref.horoo</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_apartment_main_search" model="ir.ui.view">
+            <field name="name">ref.apartment.main.search</field>
+            <field name="model">ref.apartment.main</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="full_name"/>
+                    <field name="town"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        <!-- Tree View for MainApartment -->
+        <record model="ir.ui.view" id="main_apartment_tree_view">
+            <field name="name">ref.apartment.main.tree</field>
+            <field name="model">ref.apartment.main</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Main Apartment List">
+                    <field name="company_id" options="{'no_create': True}"/>
+                    <field name="duureg_id" options="{'no_create': True}"/>
+                    <field name="horoo_id" options="{'no_create': True}"/>
+                    <field name="town"/>
+                    <field name="apartment"/>
+                    <field name="location"/>
+                    <field name="has_apartment" invisible="1"/>
+                    <button name="create_apartment" string="Байр үүсгэх" type="object"
+                            attrs="{'invisible': [('has_apartment', '=', True)]}" class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for MainApartment -->
+        <record model="ir.ui.view" id="main_apartment_form_view">
+            <field name="name">ref.apartment.main.form</field>
+            <field name="model">ref.apartment.main</field>
+            <field name="arch" type="xml">
+                <form string="Main Apartment">
+                    <sheet>
+                        <separator string="Үндсэн байр"/>
+                        <group>
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="aimag_id" options="{'no_create': True}"/>
+                            <field name="duureg_id" options="{'no_create': True}"/>
+                            <field name="horoo_id" options="{'no_create': True}"/>
+                            <field name="town"/>
+                            <field name="apartment"/>
+                            <field name="location"/>
+                            <field name="full_name" readonly="1"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_main_apartment">
+            <field name="name">Үндсэн байр</field>
+            <field name="res_model">ref.apartment.main</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Tree View for Apartment -->
+        <record id="view_apartment_search" model="ir.ui.view">
+            <field name="name">ref.apartment.search</field>
+            <field name="model">ref.apartment</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code" filter_domain="[('code', '=', self)]"/>
+                    <field name="horoo_id"/>
+                    <field name="duureg_id"/>
+                    <field name="full_name"/>
+                    <field name="town"/>
+                    <field name="address_ids" invisible="1"/>
+                    <!--                    <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>-->
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="Тоотгүй байр" name="has_no_address" domain="[('address_ids', '=', False)]"/>
+                    <!--                        <filter string="Надад хувиарлагдсан" name="assigned_to_me" domain="[('inspector_id.user_id', '=', uid)]" />-->
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <!--                        <filter string="Байцаагч" name="inspector_id_group" domain="[]" context="{'group_by':'inspector_id'}"/>-->
+                        <filter string="Хороо" name="horoo_id_group" domain="[]" context="{'group_by':'horoo_id'}"/>
+                        <filter string="Дүүрэг" name="duureg_id_group" domain="[]" context="{'group_by':'duureg_id'}"/>
+                        <filter string="Аймаг" name="aimag_id_group" domain="[]" context="{'group_by':'aimag_id'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="duureg_id"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_apartment_graph" model="ir.ui.view">
+            <field name="name">ref.apartment.graph</field>
+            <field name="model">ref.apartment</field>
+            <field name="arch" type="xml">
+                <graph>
+                    <field name="horoo_id"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="apartment_tree_view">
+            <field name="name">ref.apartment.tree</field>
+            <field name="model">ref.apartment</field>
+            <field name="arch" type="xml">
+                <!--                <tree export_xlsx="false" string="Apartment List" create="false">-->
+                <tree export_xlsx="false" string="Байрны жагсаалт">
+                    <!--                    <header>-->
+                    <!--                        <button name="change_inspector_id" type="object" string="Байцаагч солих" class="btn-primary"/>-->
+                    <!--                    </header>-->
+                    <field name="company_id" options="{'no_create': True}"/>
+                    <field name="aimag_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="duureg_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="horoo_id" invisible="1" options="{'no_create': True}"/>
+                    <!--                    <field name="full_name"/>-->
+                    <field name="main_apartment_id" options="{'no_create': True}"/>
+                    <field name="town"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="kontor"/>
+                    <field name="corps"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Apartment -->
+        <record model="ir.ui.view" id="apartment_form_view">
+            <field name="name">ref.apartment.form</field>
+            <field name="model">ref.apartment</field>
+            <field name="arch" type="xml">
+                <form string="Apartment">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" class="oe_stat_button" icon="fa-align-justify"
+                                    name="show_address_list"
+                                    context="{'default_partner_id': active_id}">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_text">Тоот</span>
+                                    <span class="o_stat_value">
+                                        <field name="total_address_count" widget="monetary"/>
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
+                        <separator string="Байр"/>
+                        <group>
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="full_name"/>
+                            <field name="aimag_id" options="{'no_create': True}"/>
+                            <field name="duureg_id" options="{'no_create': True}"/>
+                            <field name="horoo_id" options="{'no_create': True}"/>
+                            <field name="main_apartment_id" options="{'no_create': True}"/>
+                            <field name="town"/>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="kontor"/>
+                            <field name="corps"/>
+                            <!--                            <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>-->
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_apartment">
+            <field name="name">Байр</field>
+            <field name="res_model">ref.apartment</field>
+            <field name="view_mode">tree,form,graph</field>
+        </record>
+
+
+        <record id="view_address_category_search" model="ir.ui.view">
+            <field name="name">ref.address.category.search</field>
+            <field name="model">ref.address.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Tree View for AddressCategory -->
+        <record model="ir.ui.view" id="address_category_tree_view">
+            <field name="name">ref.address.category.tree</field>
+            <field name="model">ref.address.category</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Тоотын ангилал">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for AddressCategory -->
+        <record model="ir.ui.view" id="address_category_form_view">
+            <field name="name">ref.address.category.form</field>
+            <field name="model">ref.address.category</field>
+            <field name="arch" type="xml">
+                <form string="Тоотын ангилал">
+                    <sheet>
+                        <separator string="Тоотын ангилал"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_address_category">
+            <field name="name">Тоотын ангилал</field>
+            <field name="res_model">ref.address.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_address_activity_type_search" model="ir.ui.view">
+            <field name="name">ref.address.activity.type.search</field>
+            <field name="model">ref.address.activity.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Tree View for AddressActivityType -->
+        <record model="ir.ui.view" id="address_activity_type_tree_view">
+            <field name="name">ref.address.activity.type.tree</field>
+            <field name="model">ref.address.activity.type</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Address Activity Type List">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for AddressActivityType -->
+        <record model="ir.ui.view" id="address_activity_type_form_view">
+            <field name="name">ref.address.activity.type.form</field>
+            <field name="model">ref.address.activity.type</field>
+            <field name="arch" type="xml">
+                <form string="Address Activity Type">
+                    <sheet>
+                        <separator string="Тоотын чиглэлийн төрөл"/>
+
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_address_activity_type">
+            <field name="name">Чиглэл (Тоот)</field>
+            <field name="res_model">ref.address.activity.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Tree View for Address -->
+        <record id="view_ref_address_graph" model="ir.ui.view">
+            <field name="name">ref.address.graph</field>
+            <field name="model">ref.address</field>
+            <field name="arch" type="xml">
+                <graph type="pie">
+                    <field name="inspector_id"/>
+                    <!--                    <field name="pure_water" type="row"/>-->
+                    <!--                    <field name="impure_water" type="row"/>-->
+                    <!--                    <field name="heating" type="row"/>-->
+                    <!--                    <field name="proof" type="row"/>-->
+                    <!--                    <field name="heating_water_fee" type="row"/>-->
+                    <!--                    <field name="mineral_water" type="row"/>-->
+                </graph>
+            </field>
+        </record>
+        <record id="view_ref_address_search" model="ir.ui.view">
+            <field name="name">ref.address.search</field>
+            <field name="model">ref.address</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+                    <field name="address" filter_domain="[('address', '=', self)]"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="inspector_id"/>
+                    <field name="full_address"/>
+                    <field name="water_counter_ids" invisible="1"/>
+                    <field name="thermal_counter_ids" invisible="1"/>
+                    <separator/>
+                    <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="Надад хуваарилсан" name="assigned_to_me"
+                            domain="[('inspector_id.user_id', '=', uid)]"/>
+                    <filter string="Усны тоолуургүй" name="has_not_water_counters"
+                            domain="[('water_counter_ids','=',False)]"/>
+                    <filter string="Усны тоолууртай" name="has_water_counters"
+                            domain="[('water_counter_ids','!=',False)]"/>
+                    <filter string="Дулааны тоолуургүй" name="has_not_thermal_counters"
+                            domain="[('thermal_counter_ids','=',False)]"/>
+                    <filter string="Дулааны тоолууртай" name="has_thermal_counters"
+                            domain="[('thermal_counter_ids','!=',False)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Байцаагч" name="inspector_id_group" domain="[]"
+                                context="{'group_by':'inspector_id'}"/>
+                        <filter string="Байр" name="apartment_id_group" domain="[]"
+                                context="{'group_by':'apartment_id'}"/>
+                        <filter string="Хороо" name="horoo_id_group" domain="[]" context="{'group_by':'horoo_id'}"/>
+                        <filter string="Дүүрэг" name="duureg_id_group" domain="[]" context="{'group_by':'duureg_id'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="duureg_id" options="{'no_create': True}"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="address_tree_view">
+            <field name="name">ref.address.tree</field>
+            <field name="model">ref.address</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Address List" default_order="apartment_id desc, float_address asc">
+                    <header>
+                        <button name="change_inspector_id" type="object" string="Байцаагч солих" class="btn-primary"/>
+                        <!--                        <button name="create_partner" string="Харилцагч үүсгэх" class="btn-primary" type="object"/>-->
+                        <button name="change_services" string="Үйлчилгээ өөрчлөх" class="btn-primary" type="object"/>
+                        <button name="action_change_type" string="Төрөл өөрчлөх" class="btn-primary" type="object"/>
+                    </header>
+                    <field name="company_id" options="{'no_create': True}"/>
+                    <field name="type" string="Төрөл"/>
+                    <field name="code"/>
+                    <field name="apartment_code" string="Байр"/>
+                    <field name="address"/>
+                    <field name="surname"/>
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="sms"/>
+                    <field name="family"/>
+                    <field name="pure_water"/>
+                    <field name="impure_water"/>
+                    <field name="heating_water_fee"/>
+                    <field name="heating"/>
+                    <field name="proof"/>
+                    <field name="mineral_water"/>
+                    <field name="category_id" options="{'no_create': True}"/>
+                    <field name="activity_type_id" options="{'no_create': True}"/>
+                    <field name="full_address" invisible="1"/>
+                    <field name="invoice_residual"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Address -->
+        <record model="ir.ui.view" id="address_form_view">
+            <field name="name">ref.address.form</field>
+            <field name="model">ref.address</field>
+            <field name="arch" type="xml">
+                <form string="Address">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="show_payment" type="object" class="btn-primary" icon="fa-file-text-o"
+                                    groups="ub_kontor.group_kontor_cass">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="payment_residual" widget="monetary"/>
+                                    </span>
+                                    <span class="o_stat_text">Төлбөр харах</span>
+                                </div>
+                            </button>
+                            <button name="show_invoice" type="object" class="btn-primary" icon="fa-file-text-o">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="invoice_residual" widget="monetary"/>
+                                    </span>
+                                    <span class="o_stat_text">Нэхэмжлэл харах</span>
+                                </div>
+                            </button>
+                        </div>
+                        <separator string="Тоот"/>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="company_id" options="{'no_create': True}"/>
+                                <field name="apartment_id" options="{'no_create': True}"/>
+                                <field name="horoo_id"/>
+                                <field name="duureg_id" invisible="1"/>
+                                <field name="address"/>
+                                <field name="surname"/>
+                                <field name="name"/>
+                                <field name="family"/>
+                                <field name="org_account" attrs="{'invisible': [('type', '=', 'OS')]}"/>
+                                <field name="active"/>
+                                <field name="old_address"/>
+
+                            </group>
+                            <group>
+                                <field name="type"/>
+                                <!--                                <button name="action_change_type" string="Төрөл өөрчлөх" class="btn-primary" type="object"/>-->
+                                <field name="category_id" options="{'no_create': True}"/>
+                                <field name="activity_type_id" options="{'no_create': True}"/>
+                                <field name="phone"/>
+                                <field name="sms"/>
+                                <field name="owner_id" options="{'no_create': True}"/>
+                                <field name="renter_id" options="{'no_create': True}"/>
+                                <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="receivable_uid"/>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="pure_water"/>
+                                <field name="impure_water"/>
+                                <field name="heating_water_fee"/>
+                                <field name="heating"/>
+
+                                <field name="proof"/>
+
+                                <field name="mineral_water"/>
+                                <field name="uzeli"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Эзэмшигчийн мэдээлэл">
+                                <field name="user_history_ids">
+                                    <tree export_xlsx="false" editable="bottom">
+                                        <field name="surname"/>
+                                        <field name="name"/>
+                                        <field name="phone"/>
+                                        <field name="register"/>
+                                        <field name="email"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Гэрээний мэдээлэл">
+                                <field name="contract_ids">
+                                    <tree export_xlsx="false" editable="bottom">
+                                        <field name="number"/>
+                                        <field name="resident_type"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="user_name"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Талбайн хэмжээ">
+                                <field name="square_ids">
+                                    <tree export_xlsx="false" editable="bottom">
+                                        <field name="square"/>
+                                        <field name="square_coef"/>
+                                        <field name="capacity"/>
+                                        <field name="capacity_coef"/>
+                                        <field name="gradge_square"/>
+                                        <field name="public_ownership_square"/>
+                                        <field name="description"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Ам бүл">
+                                <field name="family_ids">
+                                    <tree export_xlsx="false" editable="bottom" order="id asc">
+                                        <field name="family"/>
+                                        <field name="description"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Бусад үйлчилгээ">
+                                <field name="user_service_ids">
+                                    <tree export_xlsx="false">
+                                        <field name="description"/>
+                                        <field name="value"/>
+                                        <field name="percent"/>
+                                        <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+                                        <field name="org_name"/>
+                                        <field name="org_id" options="{'no_create': True}"/>
+                                        <field name="is_noat"/>
+                                        <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                                        <field name="day"/>
+                                        <field name="price"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                        <separator string="Усны тоолуур"/>
+                        <field name="water_counter_ids" context="{'default_category': 'counter'}">
+                            <tree export_xlsx="false">
+
+                                <field name="name_id" options="{'no_create': True}"/>
+                                <!--                                <field name="type_id"/>-->
+                                <field name="type"/>
+                                <field name="number"/>
+                                <!--                                <field name="name"/>-->
+                                <field name="uom_id" options="{'no_create': True}"/>
+                                <field name="diameter"/>
+                                <field name="approved_date"/>
+                                <field name="end_date"/>
+                                <field name="state"/>
+                                <control>
+                                    <field name="address_code"/>
+                                    <field name="address_type"/>
+                                    <field name="registered_date"/>
+                                    <field name="certificate"/>
+                                </control>
+                            </tree>
+                        </field>
+                        <separator string="Дулааны тоолуур"/>
+                        <field name="thermal_counter_ids" context="{'default_category': 'thermal_counter'}">
+                            <tree export_xlsx="false">
+                                <control>
+                                    <field name="address_code"/>
+                                    <field name="address_type"/>
+                                    <field name="registered_date"/>
+                                    <field name="certificate"/>
+                                </control>
+
+                                <field name="name_id" options="{'no_create': True}"/>
+                                <!--                                <field name="type_id"/>-->
+                                <field name="type"/>
+                                <field name="number"/>
+                                <!--                                <field name="name"/>-->
+                                <field name="uom_id" options="{'no_create': True}"/>
+                                <field name="diameter"/>
+                                <field name="approved_date"/>
+                                <field name="end_date"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_address">
+            <field name="name">Тоот</field>
+            <field name="res_model">ref.address</field>
+            <field name="view_mode">tree,form,graph</field>
+        </record>
+
+
+        <!-- Tree View for AddressUserHistory -->
+        <record model="ir.ui.view" id="address_user_history_tree_view">
+            <field name="name">ref.address.user.history.tree</field>
+            <field name="model">ref.address.user.history</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="User History List">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="surname"/>
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="register"/>
+                    <field name="email"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for AddressUserHistory -->
+        <record model="ir.ui.view" id="address_user_history_form_view">
+            <field name="name">ref.address.user.history.form</field>
+            <field name="model">ref.address.user.history</field>
+            <field name="arch" type="xml">
+                <form string="User History">
+                    <sheet>
+                        <separator string="Тоот эзэмшигчийн мэдээлэл"/>
+                        <group>
+                            <field name="address_id" options="{'no_create': True}"/>
+                            <field name="surname"/>
+                            <field name="name"/>
+                            <field name="phone"/>
+                            <field name="register"/>
+                            <field name="email"/>
+                            <field name="state"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record model="ir.actions.act_window" id="action_address_user_history">
+            <field name="name">Тоотын түүх</field>
+            <field name="res_model">ref.address.user.history</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Tree View for AddressContract -->
+        <record id="view_address_contract_tree" model="ir.ui.view">
+            <field name="name">address.contract.tree</field>
+            <field name="model">ref.address.contract</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Address Contract List">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="number"/>
+                    <field name="resident_type"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="user_name"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for AddressContract -->
+        <record id="view_address_contract_form" model="ir.ui.view">
+            <field name="name">address.contract.form</field>
+            <field name="model">ref.address.contract</field>
+            <field name="arch" type="xml">
+                <form string="Address Contract">
+                    <sheet>
+                        <separator string="Тоотын гэрээний мэдээлэл"/>
+                        <group>
+                            <field name="address_id" options="{'no_create': True}"/>
+                            <field name="number"/>
+                            <field name="resident_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="user_name"/>
+                            <field name="supervisor_id" options="{'no_create': True}"/>
+                            <field name="state"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record id="action_address_contract" model="ir.actions.act_window">
+            <field name="name">Холбоо барих (Тоот)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.address.contract</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Tree View for AddressSquare -->
+        <record id="view_address_square_tree" model="ir.ui.view">
+            <field name="name">address.square.tree</field>
+            <field name="model">ref.address.square</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Address Square List">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="square"/>
+                    <field name="square_coef"/>
+                    <field name="capacity"/>
+                    <field name="capacity_coef"/>
+                    <field name="gradge_square"/>
+                    <field name="public_ownership_square"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for AddressSquare -->
+        <record id="view_address_square_form" model="ir.ui.view">
+            <field name="name">address.square.form</field>
+            <field name="model">ref.address.square</field>
+            <field name="arch" type="xml">
+                <form string="Address Square">
+                    <sheet>
+                        <separator string="Тоотын талбайн мэдээлэл"/>
+                        <group>
+                            <field name="address_id" options="{'no_create': True}"/>
+                            <field name="square"/>
+                            <field name="square_coef"/>
+                            <field name="capacity"/>
+                            <field name="capacity_coef"/>
+                            <field name="gradge_square"/>
+                            <field name="public_ownership_square"/>
+                            <field name="description"/>
+                            <field name="state"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Tree and Form Views -->
+        <record id="action_address_square" model="ir.actions.act_window">
+            <field name="name">Тайлбай (Тоот)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.address.square</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Tree View -->
+        <record id="view_address_family_tree" model="ir.ui.view">
+            <field name="name">ref.address.family.tree</field>
+            <field name="model">ref.address.family</field>
+            <field name="arch" type="xml">
+                <tree export_xlsx="false" string="Address Family List">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="family"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_address_family_form" model="ir.ui.view">
+            <field name="name">ref.address.family.form</field>
+            <field name="model">ref.address.family</field>
+            <field name="arch" type="xml">
+                <form string="Address Family">
+                    <sheet>
+                        <separator string="Ам бүлийн мэдээлэл"/>
+                        <group>
+                            <!--                            <field name="address_id"/>-->
+                            <field name="family"/>
+                            <field name="description"/>
+                            <field name="state"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open the Views -->
+        <record id="action_address_family" model="ir.actions.act_window">
+            <field name="name">Ам бүл (Тоот)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.address.family</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="view_ref_central_heating_station_form" model="ir.ui.view">
+            <field name="name">ref.central.heating.station.form</field>
+            <field name="model">ref.central.heating.station</field>
+            <field name="arch" type="xml">
+                <form string="ЦТП">
+                    <header>
+                        <button name="show_details" string="Дэлгэрэнгүй харах" type="object" class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Мөр">
+                                <field name="line_ids">
+                                    <tree>
+<!--                                        <field name="address_id"/>-->
+                                        <field name="apartment_code"/>
+                                        <field name="address_address"/>
+                                        <field name="address_type"/>
+                                        <field name="type"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_ref_central_heating_station_tree" model="ir.ui.view">
+            <field name="name">ref.central.heating.station.tree</field>
+            <field name="model">ref.central.heating.station</field>
+            <field name="arch" type="xml">
+                <tree string="ЦТП">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_ref_central_heating_station" model="ir.actions.act_window">
+            <field name="name">ЦТП</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.central.heating.station</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_central_heating_station" name="ЦТП" action="action_ref_central_heating_station" parent="config_main_menu"/>
+
+        <record id="view_ref_central_heating_station_line_tree" model="ir.ui.view">
+            <field name="name">ref.central.heating.station.line.tree</field>
+            <field name="model">ref.central.heating.station.line</field>
+            <field name="arch" type="xml">
+                <tree string="ЦТП" editable="bottom">
+                    <field name="apartment_code"/>
+                    <field name="address_address"/>
+                    <field name="address_type"/>
+                    <field name="type"/>
+                    <field name="station_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_ref_central_heating_station_line" model="ir.actions.act_window">
+            <field name="name">ЦТП</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.central.heating.station.line</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+<!--        ref.central.heating.station.line-->
+    </data>
+</odoo>

@@ -1,0 +1,38 @@
+<odoo>
+  <data>
+    <!-- Wizard Form View -->
+    <record id="view_osnaug_pay_receipt_wizard_form" model="ir.ui.view">
+      <field name="name">osnaug.pay.receipt.wizard.form</field>
+      <field name="model">osnaug.pay.receipt.wizard</field>
+      <field name="arch" type="xml">
+        <form string="ОСНААУГ Төлбөрийн Нэхэмжлэл">
+          <group>
+            <field name="year" string="Жил"/>
+            <field name="month" string="Сар"/>
+            <field name="address_type" string="Тоотын төрөл"/>
+          </group>
+          <footer>
+            <button name="action_get_osnaug_pay_receipt" type="object" string="ОСНААУГ Төлбөрийн Нэхэмжлэл татах"
+                    class="btn-primary" icon="fa-download"/>
+            <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_osnaug_pay_receipt_wizard" model="ir.actions.act_window">
+      <field name="name">ОСНААУГ Төлбөрийн Нэхэмжлэл</field>
+      <field name="res_model">osnaug.pay.receipt.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="view_id" ref="view_osnaug_pay_receipt_wizard_form"/>
+    </record>
+
+    <!-- Menu Item for Wizard -->
+    <menuitem id="menu_osnaug_pay_receipt_root" name="ОСНААУГ" parent="ub_kontor.kontor_main_menu"
+              groups="ub_kontor.osnaug_period_group"/>
+    <menuitem id="menu_osnaug_pay_receipt_wizard" name="ОСНААУГ Төлбөрийн Нэхэмжлэл татах"
+              parent="menu_osnaug_period_root" action="action_osnaug_pay_receipt_wizard"/>
+  </data>
+</odoo>

@@ -1,0 +1,139 @@
+<odoo>
+  <template id="template_pay_uoo">
+    <t t-call="web.basic_layout">
+      <style>
+        @page {
+        size: A4 landscape !important;
+        margin: 20mm !important;
+        }
+        .page, .header, .footer {
+        font-family: Arial, sans-serif !important;
+        font-size: 12px !important;
+        }
+        .dotted-line {
+        border-bottom: 1px dotted black !important;
+        display: inline-block !important;
+        width: 150px !important;
+        margin-left: 150px !important;
+        }
+        .content { margin: 10px; }
+        .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10px;
+        }
+        .table th, .table td {
+        padding: 5px;
+        border: 1px solid #ddd;
+        word-wrap: break-word;
+        }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .inspector-row { background-color: #f5f5f5; }
+      </style>
+
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-2">
+          <div class="col-4 d-flex justify-content-start">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" class="logo" style="width: 120px;"/>
+            </t>
+          </div>
+          <div class="col-8 d-flex justify-content-end">
+            <p class="mb-0 fw-bold" style="font-size: 13px;">
+              <t t-esc="company_name"/>-ын
+              <t t-esc="uoo_year"/>
+              оны
+              <t t-esc="uoo_month"/>
+              сарын Урьдчилж орсон орлого товчоо
+            </p>
+          </div>
+        </div>
+
+        <!-- Address and Report Date Section -->
+        <div class="row pb-2 align-items-center">
+          <div class="col-4">
+            <p class="mb-0" style="font-size: 13px;">Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+          </div>
+          <div class="col-8 text-end">
+            <p class="mb-0" style="font-size: 13px;">Тайлан гаргасан огноо:
+              <t t-esc="current_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Initialize total variables -->
+        <t t-set="total_prev_balance" t-value="0"/>
+        <t t-set="total_reconciled_current_invoice_amount" t-value="0"/>
+        <t t-set="total_current_balance" t-value="0"/>
+        <t t-set="total_last_balance" t-value="0"/>
+
+        <!-- Table Section -->
+        <table class="table">
+          <thead class="inspector-row">
+            <tr>
+              <th class="text-center" style="width: 50px;">Код</th>
+              <th class="text-center" style="width: 120px;">Байцаагч</th>
+              <th class="text-center" style="width: 150px;">Эхний үлдэгдэл</th>
+              <th class="text-center" style="width: 250px;">Тухайн сарын төлбөл зохихоос хаагдсан</th>
+              <th class="text-center" style="width: 150px;">Тухайн сарын УОО</th>
+              <th class="text-center" style="width: 250px;">Эцсийн үлдэгдэл</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="uoo_results" t-as="result">
+              <t t-set="total_prev_balance" t-value="total_prev_balance + (result.get('total_prev_balance') or 0)"/>
+              <t t-set="total_reconciled_current_invoice_amount"
+                 t-value="total_reconciled_current_invoice_amount + (result.get('total_reconciled_current_invoice_amount') or 0)"/>
+              <t t-set="total_current_balance"
+                 t-value="total_current_balance + (result.get('total_current_balance') or 0)"/>
+              <t t-set="total_last_balance" t-value="total_last_balance + (result.get('total_last_balance') or 0)"/>
+
+              <tr>
+                <td>
+                  <t t-esc="result.get('inspector_id')"/>
+                </td>
+                <td>
+                  <t t-esc="result.get('inspector_name')"/>
+                </td>
+                <td class="text-end">
+                  <t t-esc="result.get('total_prev_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+                <td class="text-end">
+                  <t t-esc="result.get('total_reconciled_current_invoice_amount')"
+                     t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+                <td class="text-end">
+                  <t t-esc="result.get('total_current_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+                <td class="text-end">
+                  <t t-esc="result.get('total_last_balance') * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+              </tr>
+            </t>
+            <!-- Totals Row -->
+            <tr class="inspector-row">
+              <td colspan="2" class="text-start">Нийт:</td>
+              <td class="text-end">
+                <t t-esc="total_prev_balance * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+              </td>
+              <td class="text-end">
+                <t t-esc="total_reconciled_current_invoice_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+              </td>
+              <td class="text-end">
+                <t t-esc="total_current_balance * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+              </td>
+              <td class="text-end">
+                <t t-esc="total_last_balance * -1" t-options="{'widget': 'float', 'precision': 2}"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </t>
+  </template>
+</odoo>

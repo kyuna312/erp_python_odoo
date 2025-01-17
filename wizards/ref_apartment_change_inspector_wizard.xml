@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="ref_apartment_change_inspector_form_view">
+            <field name="name">ref.apartment.change.inspector.wizard.form</field>
+            <field name="model">ref.apartment.change.inspector.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Price List">
+                    <sheet>
+                        <group>
+                            <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="change_inspector_id" type="object" class="btn-primary" string="Өөрчлөх"/>
+                         <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

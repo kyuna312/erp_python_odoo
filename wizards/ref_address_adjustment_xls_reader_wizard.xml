@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="ref_address_adjustment_xls_reader_form_view">
+            <field name="name">ref.address.adjustment.xls.reader.form</field>
+            <field name="model">ref.address.adjustment.xls.reader</field>
+            <field name="arch" type="xml">
+                <form string="Тоот өөрчлөх">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="company_id"/>
+                                <field name="address_type"/>
+                            </group>
+                            <group>
+                                <field name="file"/>
+                            </group>
+                        </group>
+                            <h3>Санамж</h3>
+                            <p>Excel файлын оруулахдаа доорх загварын дагуу файлын форматыг бэлдэж оруулна уу!</p>
+                            <div class="o_list_view mt-3">
+                                <table class="o_list_table" >
+                                    <thead>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Байцаагч</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Байр/Тоот</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Нэр</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Ам Бүл</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Талбай хэмжээ</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Регистэр дугаар</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Утас</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Нийтийн эзэмшил</th>
+                                        <th class="p-3" style="border: 1px solid #c9c9c9;">Граж талбай</th>
+                                    </thead>
+                                </table>
+                            </div>
+                    </sheet>
+                    <footer>
+                        <button name="import_file" type="object" class="btn-primary" string="Импорт"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ref_address_adjustment_xls_reader" model="ir.actions.act_window">
+            <field name="name">Тоот өөрчлөх</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ref.address.adjustment.xls.reader</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_ref_address_adjustment_xls_reader" name="Тоот өөрчлөх"
+                  action="action_ref_address_adjustment_xls_reader" parent="registration_main_menu" sequence="43"/>
+
+    </data>
+</odoo>

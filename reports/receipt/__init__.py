@@ -1,0 +1,2 @@
+from . import pay_receipt_detail_pdf_report_wizard
+from . import pay_receipt_pdf_report_wizard

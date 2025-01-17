@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the res.users form view -->
+        <record id="view_res_users_kontor_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.kontor.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+            <field name="arch" type="xml">
+                <!-- Add or modify fields, buttons, or other elements here -->
+                <xpath expr="//field[@name='tz']" position="after">
+                    <field name="access_type"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

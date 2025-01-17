@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_pay_import_invoice_wizard_form" model="ir.ui.view">
+        <field name="name">pay.import.invoice.wizard.form</field>
+        <field name="model">pay.import.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Төлбөлөхийн үлдэгдлийн тайлан">
+                <sheet>
+                    <group>
+                        <field name="file"/>
+                        <field name="company_id"/>
+                        <field name="method"/>
+                    </group>
+                        <h3>Санамж</h3>
+                        <p>Excel файлын оруулахдаа доорх загварын дагуу файлын форматыг бэлдэж оруулна </p>
+                        <div class="o_list_view mt-3">
+                            <table class="o_list_table" >
+                                <thead>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Хэрэглэгчийн код</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Жил</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Сар</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Татаваргүй дүн</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Татварын дүн</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;">Үлдэгдэл</th>
+                                    <th class="p-3" style="border: 1px solid #c9c9c9;" attrs="{'invisible': [('method', '!=', 'change_invoice_residual')]}">Нэхэмжилсэн дүн</th>
+                                </thead>
+                            </table>
+                        </div>
+                </sheet>
+                <footer>
+                    <button name="import_file" string="Import" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pay_import_invoice_wizard" model="ir.actions.act_window">
+            <field name="name">Нэхэмжлэл excel-ээс унших форм</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pay.import.invoice.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    <menuitem id="menu_import_invoice_wizard" name="Нэхэмжлэл xls-ээс оруулах"
+                  action="action_pay_import_invoice_wizard" parent="ub_kontor.menu_account" sequence="99"/>
+</odoo>

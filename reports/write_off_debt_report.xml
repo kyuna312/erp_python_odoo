@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_write_off_debt_report" model="ir.actions.act_window">
+            <field name="name">Банкны хасалны файл</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">write.off.debt.report</field>
+            <field name="view_mode">form</field>
+            <field name="domain">[]</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="write_off_debt_report_view" model="ir.ui.view">
+            <field name="name">write.off.debt.report.form</field>
+            <field name="model">write.off.debt.report</field>
+            <field name="arch" type="xml">
+                <form string="Хасалтын тайлан">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="company_id"/>
+                            </group>
+                            <group>
+                                <field name="end_date"/>
+                                <field name="bank_id" invisible="1"/>
+                                <field name="period_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="import_xls" type="object" string="Тайлан татах" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="menu_account_report" name="Тайлан" parent="ub_kontor.menu_account"/>
+        <menuitem id="menu_action_write_off_debit_report" name="Хасалтын файл"
+                  parent="ub_kontor.menu_account_report" action="ub_kontor.action_write_off_debt_report"/>
+
+    </data>
+</odoo>

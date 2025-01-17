@@ -1,0 +1,89 @@
+<odoo>
+    <template id="payment_details_pdf_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <style>
+                        @page { size: A4 landscape; margin: 20mm; }
+                        .page { font-family: Arial, sans-serif; font-size: 12px; margin: 10px; }
+                        .header, .footer, .table th, .table td { font-size: 12px; }
+                        .table { width: 100%; border-collapse: collapse; }
+                        .table th, .table td { padding: 5px; border: 1px solid black; }
+                        .text-end { text-align: right; }
+                        .text-center { text-align: center; }
+                        .fw-bold { font-weight: bold; }
+                        .mb-0 { margin-bottom: 0; }
+                    </style>
+                    <div class="page">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-2">
+                                    <t t-if="image_data_uri">
+                                        <img t-att-src="image_data_uri" class="w-100"/>
+                                    </t>
+                                </div>
+                                <div class="col-10 text-right">
+                                    <p class="mb-0 fw-bold" style="font-size: 13px;">
+                                         <t t-if="company_name">
+                                             <span t-esc="company_name"/> -ын төлбөр тооцооны дэлгэрэнгүй тайлан
+                                         </t>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <t t-if="address_type">
+                                    <p class="pl-2">
+                                        Төрөл: <span t-esc="address_type"/> <!-- Using t-esc to escape output -->
+                                    </p>
+                                </t>
+                            </div>
+
+                            <table class="table table-sm m-0 table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center border border-dark">Байр</th>
+                                        <th class="text-center border border-dark">Хаалга</th>
+                                        <th class="text-center border border-dark">Огноо</th>
+                                        <th class="text-center border border-dark">Эхний үлдэгдэл</th>
+                                        <th class="text-center border border-dark">Төлбөл зохих хөлс</th>
+                                        <th class="text-center border border-dark">Орлого</th>
+                                        <th class="text-center border border-dark">Эцсийн үлдэгдэл</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="prepare_data" t-as="data">
+                                        <tr>
+                                            <td class="border border-dark p-0 pl-2 pr-2">
+                                                <t t-esc="data['apartment_code']"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2">
+                                                <t t-esc="data['address_address']"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2">
+                                                <t t-esc="data['year']"/>-<t t-esc="data['month']"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2 text-right">
+                                                <t t-esc="data['first_balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2 text-right">
+                                                <t t-esc="data['invoiced_amount']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2 text-right">
+                                                <t t-esc="data['paid_amount']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                            <td class="border border-dark p-0 pl-2 pr-2 text-right">
+                                                <t t-esc="data['last_balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <p class="mb-2 mt-2"><b>Нэхэмжлэлийн үлдэгдэл: <t t-esc="invoice_residual" t-options="{'widget': 'float', 'precision': 2}"/> </b></p>
+                            <p class="mb-2"><b>Төлөлтийн үлдэгдэл: <t t-esc="payment_residual" t-options="{'widget': 'float', 'precision': 2}"/> </b></p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

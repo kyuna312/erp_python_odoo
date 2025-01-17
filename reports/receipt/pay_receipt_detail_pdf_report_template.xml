@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="template_pay_receipt_detail_pdf_report">
+        <t t-call="web.basic_layout">
+            <style>
+                .page, .header, .footer { font-family: Arial, sans-serif !important; font-size: 13px !important; }
+                .dotted-line {
+                    border-bottom: 1px dotted black !important;
+                    display: inline-block !important;
+                    width: 150px !important;
+                    margin-left: 150px !important;
+                }
+                .text-small { font-size: 13px !important; }
+                .text-center { text-align: center; }
+                .text-left, .text-right { padding: 4px; }
+                .table { width: 100%; border-collapse: collapse; }
+                .table-bordered th, .table-bordered td { border: 1px solid black !important; }
+            </style>
+
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <!-- Header Section -->
+                    <div class="row pb-2">
+                        <div class="col-4">
+                            <t t-if="logo_data_uri">
+                                <img t-att-src="logo_data_uri" style="width: 130px;"/>
+                            </t>
+                        </div>
+                        <div class="col-8 text-right">
+                            <p class="mb-0 text-small">
+                                <t t-esc="doc.company_id.name"/>-ын
+                                <t t-esc="doc.year"/> оны
+                                <t t-esc="doc.month"/> сарын төлбөл зохих хөлсний мэдээ
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Report Date Section -->
+                    <div class="row pb-2">
+                        <div class="col-4 text-small">
+                            <p class="mb-0">Төрөл: <t t-esc="address_type or ''"/></p>
+                        </div>
+                        <div class="col-8 text-right text-small">
+                            <p class="mb-0">Тайлан гаргасан: <t t-esc="doc.name or ''"/></p>
+                        </div>
+                    </div>
+
+                    <!-- Main Table Section -->
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="text-center">Нийт</th>
+                                <t t-foreach="header_data_list" t-as="hd">
+                                    <th rowspan="2">
+                                        <t t-set="i" t-value="0"/>
+                                        <t t-foreach="hd" t-as="d">
+                                            <div t-attf-class="#{i % 2 == 0 and 'text-left' or 'text-right'}">
+                                                <t t-esc="d.get('service_name')"/>
+                                            </div>
+                                            <t t-set="i" t-value="i + 1"/>
+                                        </t>
+                                    </th>
+                                </t>
+                                <th rowspan="2" class="text-center">Дүн</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Байр</th>
+                                <th class="text-center">Өрх <br/>тоо</th>
+                                <th class="text-center">Ам <br/>бүл</th>
+                                <th class="text-center">Талбайн <br/>хэмжээ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="totals" t-value="{'family': 0, 'address_count': 0, 'square': 0}"/>
+                            <tr t-foreach="section_1" t-as="s1_data">
+                                <td><t t-esc="s1_data.get('apartment_code') or ''"/></td>
+                                <td><t t-esc="s1_data.get('family') or 0"/></td>
+                                <td><t t-esc="s1_data.get('address_count') or 0"/></td>
+                                <td><t t-esc="s1_data.get('square') or 0.0" t-options="{'widget': 'float', 'precision': 2}"/></td>
+
+                                <!-- Service Data -->
+                                <t t-foreach="header_data_list" t-as="hd">
+                                    <td>
+                                        <t t-set="i" t-value="0"/>
+                                        <t t-foreach="hd" t-as="d">
+                                            <div t-attf-class="#{i % 2 == 0 and 'text-left' or 'text-right'}">
+                                                <t t-set="service_data" t-value="section_2.get(s1_data.get('apartment_id'), {}).get(d.get('service_id'))"/>
+                                                <t t-if="service_data and service_data[0]">
+                                                    <t t-esc="service_data[0].get('total_amount', 0.0)" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                </t>
+                                                <t t-else="">0.0</t>
+                                            </div>
+                                            <t t-set="i" t-value="i + 1"/>
+                                        </t>
+                                    </td>
+                                </t>
+
+                                <td><t t-esc="s1_data.get('total_amount') or 0.0" t-options="{'widget': 'float', 'precision': 2}"/></td>
+
+                                <!-- Update Totals -->
+                                <t t-set="totals" t-value="{
+                                    'family': totals.get('family', 0) + (s1_data.get('family') or 0),
+                                    'address_count': totals.get('address_count', 0) + (s1_data.get('address_count') or 0),
+                                    'square': totals.get('square', 0) + (s1_data.get('square') or 0.0)
+                                }"/>
+                            </tr>
+
+                            <!-- Total Row Section -->
+                            <tr>
+                                <td colspan="1" class="text-center">Нийт</td>
+                                <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="totals.get('family') or 0"/></td>
+                                <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="totals.get('address_count') or 0"/></td>
+                                <td><t t-options="{'widget': 'float', 'precision': 2}" t-esc="totals.get('square') or 0.0"/></td>
+
+                                <t t-foreach="header_data_list" t-as="hd">
+                                    <td>
+                                        <t t-set="i" t-value="0"/>
+                                        <div t-foreach="hd" t-as="d" t-attf-class="#{i % 2 == 0 and 'text-left' or 'text-right'}">
+                                            <t t-set="service_id" t-value="d.get('service_id')"/>
+
+                                            <!-- Calculate total sum across all section_1 data -->
+                                            <t t-esc="sum([sum([item.get('total_amount', 0.0) for item in section_2.get(s1_data.get('apartment_id'), {}).get(service_id, [])]) for s1_data in section_1])" t-options="{'widget': 'float', 'precision': 2}"/>
+
+                                            <t t-set="i" t-value="i + 1"/>
+                                        </div>
+                                    </td>
+                                </t>
+
+                                <td>
+                                    <t t-esc="sum([item.get('total_amount', 0.0) for item in section_1])" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                     <!-- Footer Section -->
+                    <div class="row pt-2">
+                        <!-- Left Side (Stamp) -->
+                        <div class="col-4" style="font-size: 13px;">
+                            <p><strong>Тамга:</strong></p>
+                        </div>
+
+                        <!-- Right Side (Signatures) -->
+                        <div class="col-24 offset-4">
+                            <p class="mb-2" style="font-size: 13px;">
+                                <strong style="margin-right: 80px;">Хянасан дарга:</strong>
+                                <span class="dotted-line" style="float: right;"></span>
+                            </p>
+                            <p class="mb-2" style="font-size: 13px;">
+                                <strong style="margin-right: 100px;">Ахлах нябо:</strong>
+                                <span class="dotted-line" style="float: right;"></span>
+                            </p>
+                            <p class="mb-2" style="font-size: 13px;">
+                                <strong>Мэдээ гаргасан нябо:</strong>
+                                <span class="dotted-line" style="float: right;"></span>
+                            </p>
+                            <p class="mb-2" style="font-size: 13px;">
+                                <strong style="margin-right: 90px;">Хүлээн авсан:</strong>
+                                <span class="dotted-line" style="float: right;"></span>
+                            </p>
+                            <p style="font-size: 13px;">
+                                <strong style="margin-right: 80px;">Хүлээн авсан огноо:</strong>
+                                <span class="dotted-line" style="float: right;"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

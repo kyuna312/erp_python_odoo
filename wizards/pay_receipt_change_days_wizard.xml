@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pay_receipt_change_days_form" model="ir.ui.view">
+            <field name="name">pay.receipt.change.days.form</field>
+            <field name="model">pay.receipt.change.days</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="receipt_id" invisible="1" options="{'no_create': True}"/>
+                                <field name="address_type" invisible="1" options="{'no_create': True}"/>
+                                <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                                <field name="apartment_ids" widget="many2many_tags"/>
+                                <field name="address_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="days_of_pure_water"/>
+                                <field name="days_of_impure_water"/>
+                                <field name="days_of_heating"/>
+                                <field name="days_of_hot_water"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Өөрчлөх" name="change_days" type="object" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_pay_receipt_change_days" model="ir.actions.act_window">
+            <field name="name">Төлбөрийн баримт хоног өөрчлөх</field>
+            <field name="res_model">pay.receipt.change.days</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

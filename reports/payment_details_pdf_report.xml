@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Wizard Form View -->
+        <record id="view_payment_details_pdf_report_wizard_form" model="ir.ui.view">
+            <field name="name">payment.details.pdf.report.wizard.form</field>
+            <field name="model">payment.details.pdf.report.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="year"/>
+                                <field name="company_id"/>
+                            </group>
+                            <group>
+                                <field name="month"/>
+                                <field name="apartment_ids" widget="many2many_tags"/>
+                                <field name="address_id"
+                                       domain="[('apartment_id', 'in', apartment_ids), ('company_id', '=', company_id)]"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="download" type="object" string="Татах" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Report Action Definition -->
+        <record id="action_payment_details_pdf_report" model="ir.actions.report">
+            <field name="name">Төлбөрийн дэлгэрэнгүй тайлан</field>
+            <field name="model">payment.details.pdf.report.wizard</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">ub_kontor.payment_details_pdf_report_template</field>
+            <field name="print_report_name">'Payment Details - ' + object.year + '/' + object.month</field>
+            <field name="binding_model_id" ref="model_payment_details_pdf_report_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Wizard Window Action Definition -->
+        <record id="action_payment_details_pdf_report_wizard" model="ir.actions.act_window">
+            <field name="name">Төлбөрийн дэлгэрэнгүй тайлан</field>
+            <field name="res_model">payment.details.pdf.report.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Menu Item Definition -->
+        <menuitem
+            id="menu_payment_details_pdf_report_wizard"
+            name="Төлбөрийн дэлгэрэнгүй тайлан"
+            parent="menu_report"
+            action="action_payment_details_pdf_report_wizard" groups="ub_kontor.group_kontor_accountant"
+            sequence="20"
+        />
+
+    </data>
+</odoo>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="ref_address_global_rule" model="ir.rule">
+            <field name="name">Address global Rule</field>
+            <field name="model_id" ref="model_ref_address"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('type', '=', user.access_type)]</field>
+        </record>
+        <record id="service_address_global_rule" model="ir.rule">
+            <field name="name">Service global Rule</field>
+            <field name="model_id" ref="model_service_address"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('address_id.company_id','in',company_ids), ('address_id.type', '=',
+                user.access_type)]
+            </field>
+        </record>
+        <record id="ref_apartment_global_rule" model="ir.rule">
+            <field name="name">Apartment global Rule</field>
+            <field name="model_id" ref="model_ref_apartment"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+        </record>
+        <record id="ref_apartment_main_global_rule" model="ir.rule">
+            <field name="name">Apartment global Rule</field>
+            <field name="model_id" ref="model_ref_apartment_main"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="counter_counter_global_rule" model="ir.rule">
+            <field name="name">Counter global Rule</field>
+            <field name="model_id" ref="model_counter_counter"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_id.type', '=', user.access_type)]
+            </field>
+        </record>
+        <record id="counter_counter_line_group_global_rule" model="ir.rule">
+            <field name="name">Counter line group global Rule</field>
+            <field name="model_id" ref="model_counter_counter_line_group"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_type', '=', user.access_type)]
+            </field>
+            <!--            <field name="domain_force">[('company_id','in',company_ids)]</field>-->
+        </record>
+
+        <record id="counter_counter_line_global_rule" model="ir.rule">
+            <field name="name">Counter line group global Rule</field>
+            <field name="model_id" ref="model_counter_counter_line"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('address_id.type', '=', user.access_type)]</field>
+        </record>
+
+        <record id="pay_receipt_global_rule" model="ir.rule">
+            <field name="name">Pay receipt group global Rule</field>
+            <field name="model_id" ref="model_pay_receipt"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_type', 'in', (None,
+                user.access_type))]
+            </field>
+        </record>
+
+        <record id="pay_receipt_address_global_rule" model="ir.rule">
+            <field name="name">Pay receipt address group global Rule</field>
+            <field name="model_id" ref="model_pay_receipt_address"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('address_id.type','=',user.access_type)]</field>
+        </record>
+
+        <record id="counter_counter_sharing_global_rule" model="ir.rule">
+            <field name="name">Counter sharing global Rule</field>
+            <field name="model_id" ref="model_counter_counter_sharing"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">
+                [('counter_id.company_id','in',company_ids),('address_id.type','=',user.access_type)]
+            </field>
+        </record>
+        <record id="service_payment_global_rule" model="ir.rule">
+            <field name="name">Service payment global Rule</field>
+            <field name="model_id" ref="model_service_payment"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_id.type', '=', user.access_type)]
+            </field>
+        </record>
+        <record id="service_deduction_group_global_rule" model="ir.rule">
+            <field name="name">Хасагдах хэрэглээ групп global Rule</field>
+            <field name="model_id" ref="model_service_deduction"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_type', '=', user.access_type)]
+            </field>
+        </record>
+
+        <record id="service_deduction_global_rule" model="ir.rule">
+            <field name="name">Хасагдах хэрэглээ global Rule</field>
+            <field name="model_id" ref="model_service_deduction_group"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_type', '=', user.access_type)]
+            </field>
+        </record>
+
+        <record id="service_timed_condition_global_rule" model="ir.rule">
+            <field name="name">Хугацаат үйлчилгээ global Rule</field>
+            <field name="model_id" ref="model_service_timed_condition"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="pay_receipt_address_invoice_global_rule" model="ir.rule">
+            <field name="name">Конторын нэхэмжлэл</field>
+            <!--pay.receipt.address.invoice-->
+            <field name="model_id" ref="model_pay_receipt_address_invoice"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids),('address_id.type','=',user.access_type)]
+            </field>
+        </record>
+
+        <record id="pay_bank_account_global_rule" model="ir.rule">
+            <field name="name">Конторын данс</field>
+            <field name="model_id" ref="model_pay_bank_account"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="pay_address_payment_line_global_rule" model="ir.rule">
+            <field name="name">Төлбөрийн мөр</field>
+            <field name="model_id" ref="model_pay_address_payment_line"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">
+                [('payment_id.account_id.company_id','in',company_ids),('payment_id.address_id.type','=',user.access_type)]
+            </field>
+        </record>
+
+        <record id="pay_address_payment_line_view_global_rule" model="ir.rule">
+            <field name="name">Төлбөрийн мөр</field>
+            <field name="model_id" ref="model_pay_address_payment_line_view"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">
+                [('account_id.company_id','in',company_ids),('address_id.type','=',user.access_type)]
+            </field>
+        </record>
+
+        <record id="pay_address_payment_global_rule" model="ir.rule">
+            <field name="name">Төлбөр</field>
+            <field name="model_id" ref="model_pay_address_payment"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('account_id.company_id', 'in', company_ids),('address_type', 'in',
+                (user.access_type,
+                False))]
+            </field>
+        </record>
+
+        <record id="pay_bank_statement_global_rule" model="ir.rule">
+            <field name="name">Банкны хуулга</field>
+            <field name="model_id" ref="model_pay_bank_statement"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="pay_bank_statement_line_global_rule" model="ir.rule">
+            <field name="name">Банкны хуулга</field>
+            <field name="model_id" ref="model_pay_bank_statement_line"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('statement_id.company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="pay_period_global_rule" model="ir.rule">
+            <field name="name">Мөчлөг</field>
+            <field name="model_id" ref="model_pay_period"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids), ('address_type', '=', user.access_type)]
+            </field>
+        </record>
+
+
+        <record id="ref_central_heating_station_global_rule" model="ir.rule">
+            <field name="name">Мөчлөг</field>
+            <field name="model_id" ref="model_ref_central_heating_station"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">[('company_id','in',company_ids)]
+            </field>
+        </record>
+
+    </data>
+</odoo>

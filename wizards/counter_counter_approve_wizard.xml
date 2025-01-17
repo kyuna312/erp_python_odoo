@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="counter_counter_approve_wizard_form" model="ir.ui.view">
+            <field name="name">counter.counter.approve.wizard.form</field>
+            <field name="model">counter.counter.approve.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                 <field name="company_id"/>
+                                 <field name="address_type"/>
+                                 <field name="counter_group_id"/>
+                            </group>
+                            <group>
+                                <field name="file"/>
+                            </group>
+                        </group>
+                        <div class="o_list_view mt-3">
+                            <table class="o_list_table" >
+                                <thead>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Байр</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Тоот</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Дулааны тоолуур мөн эсэх</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Тоолуурын нэр</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Хэмжих нэгж</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Тоолуурын дугаар</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Эхний</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Эцийн</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Марк</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">1-р лацны дугаар</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">2-р лацны дугаар</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Гэрчилгээний дугаар</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Баталгаажсан огноо</th>
+                                    <th class="p-2" style="border: 1px solid #c9c9c9;">Тайлбар</th>
+                                </thead>
+                            </table>
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button name="import_file" type="object" string="Import" class="btn-primary"/>
+                        <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_counter_counter_approve_wizard" model="ir.actions.act_window">
+            <field name="name">Усны тоолуурын баталгаажуулалт</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">counter.counter.approve.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_counter_approve_wizard" name="Тоолуур баталгаажуулалт"
+                  action="action_counter_counter_approve_wizard" parent="registration_main_menu" sequence="43"/>
+    </data>
+</odoo>

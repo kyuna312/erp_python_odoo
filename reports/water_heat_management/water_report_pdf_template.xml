@@ -1,0 +1,81 @@
+<odoo>
+    <!-- Add QWeb template -->
+    <template id="template_water_report_pdf">
+        <t t-call="web.basic_layout">
+            <style>
+                @page { size: A4; margin: 10mm; }
+                .table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                .table th, .table td { padding: 5px; border: 1px solid #ddd; text-align: center; }
+                .table .group-header { background-color: #f2f2f2; font-weight: bold; text-align: left; }
+                .fw-bold { font-weight: bold; }
+                .text-end { text-align: right; }
+                .text-center { text-align: center; }
+                .text-start { text-align: left; }
+                .signature-section { margin-top: 30px; }
+                .dotted-line { border-bottom: 1px dotted black; width: 150px; display: inline-block; }
+            </style>
+
+            <div class="page content">
+                <!-- Header Section -->
+                <div class="row pb-1">
+                    <div class="col-6">
+                        <t t-if="logo_data_uri">
+                            <img t-att-src="logo_data_uri" style="width: 120px;" />
+                        </t>
+                    </div>
+                    <div class="col-6 text-end">
+                        <p class="fw-bold"><t t-esc="company_name" /> <t t-esc="water_report_date" />  сарын Усны Тайлан</p>
+                        <p>Төрөл: <t t-esc="address_type" /></p>
+                        <p>Тайлан гаргасан: <t t-esc="report_date" /></p>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Хэрэглэгчийн нэр</th>
+                            <th>Байр</th>
+                            <th>Тоот</th>
+                            <th>Талбайн хэмжээ</th>
+                            <th>Ам бүл</th>
+                            <th>Нийт зөрүү</th>
+                            <th>Халуун ус</th>
+                            <th>Цэвэр зөрүү</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through groups -->
+                        <t t-foreach="grouped_data.items()" t-as="group">
+                            <!-- Group Header -->
+                            <tr class="group-header">
+                                <td colspan="8" class="text-start">Байр: <t t-esc="group[1][0]['apartment_code']" /></td>
+                            </tr>
+                            <!-- Individual Rows -->
+                            <t t-foreach="group[1]" t-as="line">
+                                <tr>
+                                    <td class="text-start"><t t-esc="line['customer_name']" /></td>
+                                    <td><t t-esc="line['apartment_code']" /></td>
+                                    <td><t t-esc="line['address']" /></td>
+                                    <td><t t-esc="line['square']" /> м²</td>
+                                    <td><t t-esc="line['address_family']" /></td>
+                                    <td><t t-esc="line['total_difference']" /></td>
+                                    <td><t t-esc="line['hot_water']" /></td>
+                                    <td><t t-esc="line['cold_water_difference']" /></td>
+                                </tr>
+                            </t>
+                            <!-- Subtotals -->
+                            <tr class="fw-bold">
+                                <td colspan="4" class="text-start">Нийт:</td>
+                                <td><t t-esc="sum([item['address_family'] for item in group[1]])" /></td>
+                                <td><t t-esc="sum([item['total_difference'] for item in group[1]])" /></td>
+                                <td><t t-esc="sum([item['hot_water'] for item in group[1]])" /></td>
+                                <td><t t-esc="sum([item['cold_water_difference'] for item in group[1]])" /></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,69 @@
+<odoo>
+    <data>
+        <!-- Action for User Service Creator -->
+        <record model="ir.actions.act_window" id="action_user_service_creator">
+            <field name="name">Хэрэглэгчийн үйлчилгээ оруулах</field>
+            <field name="res_model">service.address.creator</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_type': 'user_service'}</field>
+        </record>
+
+        <!-- Action for Additional Service Creator -->
+        <record model="ir.actions.act_window" id="action_additional_service_creator">
+            <field name="name">Нэмэлт үйлчилгээ оруулах</field>
+            <field name="res_model">service.address.creator</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_type': 'additional_service'}</field>
+        </record>
+
+        <!-- Form View for Service Address Creator -->
+        <record id="view_service_address_creator_form" model="ir.ui.view">
+            <field name="name">service.address.creator.form</field>
+            <field name="model">service.address.creator</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="type" invisible="1" readonly="1"/>
+                        <group>
+                            <group>
+                                <field name="org_id" options="{'no_create': True}"/>
+                                <field name="service_type_id" options="{'no_create': True}"/>
+                                <field name="pricelist_id" attrs="{'invisible': [('type', '=', 'additional_service')], 'required': [('type', '!=', 'additional_service')]}" options="{'no_create': True}"/>
+                                <field name="price" attrs="{'invisible': [('type', '=', 'user_service')], 'required': [('type', '!=', 'user_service')]}"/>
+                                <field name="year" attrs="{'invisible': [('type', '!=', 'additional_service')], 'required': [('type', '=', 'additional_service')]}"/>
+                                <field name="month" attrs="{'invisible': [('type', '!=', 'additional_service')], 'required': [('type', '=', 'additional_service')]}"/>
+                                <field name="day" attrs="{'invisible': [('type', '!=', 'user_service')], 'required': [('type', '=', 'user_service')]}"/>
+                            </group>
+                            <group>
+                                <field name="value"/>
+                                <field name="percent" attrs="{'invisible': [('type', '=', 'additional_service')]}"/>
+                                <field name="description"/>
+                                <field name="is_noat"/>
+                            </group>
+                        </group>
+                        <field name="address_ids">
+                            <tree>
+                                <field name="apartment_code"/>
+                                <field name="address"/>
+                                <field name="phone"/>
+                                <field name="type"/>
+                                <field name="pure_water"/>
+                                <field name="impure_water"/>
+                                <field name="heating"/>
+                                <field name="proof"/>
+                                <field name="heating_water_fee"/>
+                                <field name="mineral_water"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button string="Үүсгэх" name="create_lines" type="object" class="btn-primary"/>
+                        <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

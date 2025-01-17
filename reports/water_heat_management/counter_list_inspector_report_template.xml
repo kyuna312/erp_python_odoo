@@ -1,0 +1,96 @@
+<odoo>
+  <template id="template_counter_list_inspector_report">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4 landscape; margin: 10mm; }
+        .table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .table th, .table td { padding: 5px; border: 1px solid #ddd; text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .text-center { text-align: center; }
+        .text-start { text-align: left; }
+      </style>
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-1">
+          <div class="col-6">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" style="width: 120px;"/>
+            </t>
+          </div>
+          <div class="col-6 text-end">
+            <p class="fw-bold">
+              <t t-esc="list(grouped_data.values())[0]['inspector_name']"/>
+              -н
+              <t t-esc="user_balance_list_date"/>
+              сарын усны тоолуурын заалт
+            </p>
+            <p>Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+            <p>Тайлан гаргасан:
+              <t t-esc="report_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr class="inspector-row">
+              <th rowspan="2">Байр, тоот</th>
+              <th rowspan="2">Х.код</th>
+              <th rowspan="2">Хэрэглэгчийн нэр</th>
+              <t t-foreach="header_data" t-as="header">
+                <th colspan="2" t-esc="header['display_name']"/>
+              </t>
+            </tr>
+            <tr class="inspector-row">
+              <t t-foreach="header_data" t-as="header">
+                <th>Эхний заалт</th>
+                <th>Эцсийн заалт</th>
+              </t>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="grouped_data.items()" t-as="line">
+              <tr>
+                <td>
+                  <t t-esc="line[1]['address_address']"/>
+                </td>
+                <td>
+                  <t t-esc="line[1]['inspector_id']"/>
+                </td>
+                <td>
+                  <t t-esc="line[1]['inspector_name']"/>
+                </td>
+                <t t-foreach="header_data" t-as="header">
+                  <t t-call="ub_kontor.counter_list_inspector_table_row">
+                    <t t-set="counters" t-value="line[1]['counters']"/>
+                  </t>
+                </t>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </t>
+  </template>
+
+  <!-- Row Helper Template -->
+  <template id="counter_list_inspector_table_row">
+    <td>
+      <t t-foreach="counters" t-as="counter">
+        <t t-if="counter['counter_name'] == header['counter_name']">
+          <t t-esc="counter['first_counter']"/>
+        </t>
+      </t>
+    </td>
+    <td>
+      <t t-foreach="counters" t-as="counter">
+        <t t-if="counter['counter_name'] == header['counter_name']">
+          <t t-esc="counter['last_counter']"/>
+        </t>
+      </t>
+    </td>
+  </template>
+</odoo>

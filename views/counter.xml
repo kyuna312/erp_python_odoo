@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <function model="counter.counter.line" name="create_procedure"/>
+    <!--         options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"              -->
+    <record id="view_counter_name_search" model="ir.ui.view">
+      <field name="name">counter.name.search</field>
+      <field name="model">counter.name</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <field name="type"/>
+          <separator/>
+          <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+          <separator/>
+        </search>
+      </field>
+    </record>
+    <!--    counter.name    -->
+    <record id="view_counter_name_form" model="ir.ui.view">
+      <field name="name">counter.name.form</field>
+      <field name="model">counter.name</field>
+      <field name="arch" type="xml">
+        <form string="Counter Name">
+          <sheet>
+            <separator string="Тоолуурын нэр"/>
+            <group>
+              <field name="name"/>
+              <field name="return_type"/>
+              <!--                            <field name="type_id"/>-->
+              <field name="type"/>
+              <field name="active"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_counter_name_tree" model="ir.ui.view">
+      <field name="name">counter.name.tree</field>
+      <field name="model">counter.name</field>
+      <field name="arch" type="xml">
+        <tree string="Counter Names" export_xlsx="false">
+          <field name="name"/>
+          <field name="return_type"/>
+          <field name="type"/>
+          <field name="active"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_counter_name" model="ir.actions.act_window">
+      <field name="name">Тоолуурын нэр</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.name</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--        counter.warrant         -->
+    <record id="view_counter_warrant_form" model="ir.ui.view">
+      <field name="name">counter.warrant.form</field>
+      <field name="model">counter.warrant</field>
+      <field name="arch" type="xml">
+        <form string="Counter Warranty">
+          <sheet>
+            <separator string="Тоолуурын баталгаа"/>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_counter_warrant_tree" model="ir.ui.view">
+      <field name="name">counter.warrant.tree</field>
+      <field name="model">counter.warrant</field>
+      <field name="arch" type="xml">
+        <tree string="Counter Warranties" export_xlsx="false">
+          <field name="name"/>
+          <field name="active"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_counter_warrant" model="ir.actions.act_window">
+      <field name="name">Тоолуурын баталгаа</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.warrant</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <record id="view_counter_graph" model="ir.ui.view">
+      <field name="name">counter.counter.graph</field>
+      <field name="model">counter.counter</field>
+      <field name="arch" type="xml">
+        <graph type="pie">
+          <field name="name_id"/>
+        </graph>
+      </field>
+    </record>
+    <record id="view_counter_search" model="ir.ui.view">
+      <field name="name">counter.counter.search</field>
+      <field name="model">counter.counter</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_id" options="{'no_create': True, 'no_open': True}"
+                 filter_domain="[('apartment_id.code', '=', self)]"/>
+          <field name="address_id" options="{'no_create': True, 'no_open': True}"
+                 filter_domain="[('address_id.address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="address_owner"/>
+          <field name="name_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="inspector_id"/>
+          <field name="code"/>
+          <separator/>
+          <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+          <separator/>
+          <group expand="0" string="Group By...">
+            <filter string="Тоот" name="address_id_group" domain="[]" context="{'group_by':'address_id'}"/>
+            <filter string="Төлөв" name="state_group" domain="[]" context="{'group_by':'state'}"/>
+            <filter string="Нэр" name="name_id_group" domain="[]" context="{'group_by':'name_id'}"/>
+
+            <filter string="Ангилал" name="category_group" domain="[]" context="{'group_by':'category'}"/>
+            <filter string="Төрөл" name="type_group" domain="[]" context="{'group_by':'type'}"/>
+          </group>
+          <searchpanel>
+            <field name="inspector_id"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+    <!--        counter.counter         -->
+    <record id="view_counter_form" model="ir.ui.view">
+      <field name="name">counter.counter.form</field>
+      <field name="model">counter.counter</field>
+      <field name="arch" type="xml">
+        <form string="Counter">
+          <header>
+            <field name="state" widget="statusbar" nolabel="1" options="{'clickable': '1'}"/>
+          </header>
+          <sheet>
+            <separator string="Тоолуур"/>
+            <group>
+              <group>
+                <field name="address_id" options="{'no_create': True}"/>
+                <field name="address_code"/>
+                <field name="address_type"/>
+              </group>
+              <group>
+                <field name="address_owner"/>
+                <field name="address_apartment"/>
+                <field name="address_address"/>
+                <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                <field name="description"/>
+                <!--                                <field name="close_date"/>-->
+              </group>
+            </group>
+            <group>
+              <group>
+                <!--                                <field name="name"/>-->
+                <field name="name_id" options="{'no_create': True}"/>
+                <field name="number"/>
+                <field name="code"/>
+                <field name="mark"/>
+                <field name="seal1"/>
+                <field name="seal2"/>
+                <field name="certificate"/>
+                <field name="active" invisible="1"/>
+              </group>
+              <group>
+                <!--                                <field name="type_id"/>-->
+                <field name="category"/>
+                <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="diameter"/>
+                <field name="warrant_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="approved_date"/>
+                <field name="end_date"/>
+                <field name="registered_date"/>
+
+
+                <field name="percent"
+                       attrs="{'invisible': [('category', '!=', 'thermal_counter')], 'required': [('category', '=', 'thermal_counter')] }"/>
+                <field name="sha_coef"
+                       attrs="{'invisible': [('category', '!=', 'thermal_counter')], 'required': [('category', '=', 'thermal_counter')] }"/>
+                <field name="method_type"
+                       attrs="{'invisible': [('category', '!=', 'thermal_counter')]}"/>
+              </group>
+              <!-- Additional fields as needed -->
+            </group>
+            <notebook>
+              <page string="Тариф хуваах">
+                <field name="usage_div_ids">
+                  <tree editable="top" export_xlsx="false">
+                    <field name="counter_category" invisible="1" options="{'no_create': True}"/>
+                    <field name="service_type_id" readonly="False"
+                           domain="['|',('category', '=', counter_category), ('category', '=', 'each_counter')]"
+                           options="{'no_create': True, 'no_open': True}"/>
+                    <field name="pricelist_type_id" readonly="False"
+                           options="{'no_create': True, 'no_open': True}"/>
+                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="percent"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Хэрэглээ хуваах">
+                <field name="sharing_ids">
+                  <tree editable="top" export_xlsx="false">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="percent"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_counter_tree" model="ir.ui.view">
+      <field name="name">counter.counter.tree</field>
+      <field name="model">counter.counter</field>
+      <field name="arch" type="xml">
+        <tree string="Counters" default_order="address_apartment, address_address asc" export_xlsx="false">
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <field name="company_id"/>
+          <field name="address_code"/>
+          <field name="address_apartment"/>
+          <field name="address_address"/>
+          <!--                    <field name="address_type"/>-->
+          <field name="address_owner"/>
+          <field name="name_id" options="{'no_create': True}"/>
+
+          <field name="number"/>
+          <field name="code"/>
+          <field name="category"/>
+          <field name="state"/>
+          <field name="inspector_id"/>
+          <!--                    <field name="type"/>-->
+          <!--                    <field name="number"/>-->
+          <!--                    <field name="active"/>-->
+
+          <!--                    <field name="address_code_temp"/>-->
+        </tree>
+      </field>
+    </record>
+
+
+    <record id="action_ut_counter" model="ir.actions.act_window">
+      <field name="name">Усны тоолуур</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter</field>
+      <field name="view_mode">tree,form,graph</field>
+      <field name="domain">
+        [('category', '=', 'counter')]
+      </field>
+      <field name="context">
+        {
+        'default_category': 'counter'
+        }
+      </field>
+    </record>
+
+    <record id="action_dt_counter" model="ir.actions.act_window">
+      <field name="name">Дулааны тоолуур</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter</field>
+      <field name="view_mode">tree,form,graph</field>
+      <field name="domain">
+        [('category', '=', 'thermal_counter')]
+      </field>
+      <field name="context">
+        {
+        'default_category': 'thermal_counter'
+        }
+      </field>
+    </record>
+    <!--    counter.counter.sharing    -->
+    <record id="view_counter_sharing_search" model="ir.ui.view">
+      <field name="name">counter.counter.sharing.search</field>
+      <field name="model">counter.counter.sharing</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="address_id" filter_domain="[('address_id.address', '=', self)]"/>
+          <field name="apartment_id" filter_domain="[('apartment_id.code', '=', self)]"/>
+        </search>
+      </field>
+    </record>
+    <record id="view_counter_sharing_form" model="ir.ui.view">
+      <field name="name">counter.counter.sharing.form</field>
+      <field name="model">counter.counter.sharing</field>
+      <field name="arch" type="xml">
+        <form string="Counter Sharing">
+          <sheet>
+            <separator string="Хуваагдах хэрэглээ"/>
+            <group>
+              <field name="counter_id" options="{'no_create': True}"/>
+              <field name="address_id" options="{'no_create': True}"/>
+              <field name="percent"/>
+              <!--                            <field name="now_counter"/>-->
+              <!--                            <field name="last_counter"/>-->
+              <!--                            <field name="difference" readonly="1"/>-->
+              <!--                            <field name="fraction"/>-->
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_counter_sharing_tree" model="ir.ui.view">
+      <field name="name">counter.counter.sharing.tree</field>
+      <field name="model">counter.counter.sharing</field>
+      <field name="arch" type="xml">
+        <tree string="Counter Sharing" editable="top" export_xlsx="false">
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="counter_name_id"/>
+          <field name="counter_code"/>
+          <field name="counter_address_code"/>
+          <field name="counter_address_apartment_code"/>
+          <field name="counter_address_address"/>
+          <field name="counter_address_owner"/>
+          <field name="counter_id" options="{'no_create': True}"/>
+          <field name="address_id" options="{'no_create': True}" invisible="1"/>
+          <field name="percent"/>
+          <!--                    <field name="now_counter"/>-->
+          <!--                    <field name="last_counter"/>-->
+          <!--                    <field name="difference"/>-->
+          <!--                    <field name="fraction"/>-->
+        </tree>
+      </field>
+    </record>
+    <record id="action_counter_sharing" model="ir.actions.act_window">
+      <field name="name">Хуваагдах хэрэглээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter.sharing</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <!--    counter.counter.line    -->
+    <record id="view_counter_line_tree" model="ir.ui.view">
+      <field name="name">counter.counter.line.tree</field>
+      <field name="model">counter.counter.line</field>
+      <field name="arch" type="xml">
+        <tree string="Counter Lines" editable="top" create="false" decoration-info="counter_category=='counter'"
+              decoration-danger="counter_category=='thermal_counter'"
+              default_order="apartment_code,float_address,counter_name asc">
+
+          <!--  ===========
+                  Хэрвээ энэхүү харагдацын талбаруудын байршлыг өөрчлсөн бол
+                  counter_line_xls_reader_wizard.py файлын excel import хийх функцын
+                  excel-с уншиж байгаа талбаруудын index-г өөрлөх хэрэгтэй
+          ================ -->
+          <!--                    <field name="id"/>-->
+          <field name="counter_primary_key"/>
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="address_owner"/>
+          <field name="counter_name_id" options="{'no_create': True}"/>
+          <field name="counter_number"/>
+          <!--                    <field name="counter_id" options="{'no_create': True}"/>-->
+          <field name="counter_code"/>
+          <field name="now_counter" sum="Эхний заалтын нийлбэр"/>
+          <field name="last_counter" sum="Сүүлийн заалтын нийлбэр"/>
+          <field name="difference" sum="Зөрүү нийлбэр"/>
+          <field name="fraction" sum="Задгай нийлбэр"/>
+          <field name="counter_category" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+    <record id="view_counter_line_search" model="ir.ui.view">
+      <field name="name">counter.counter.line.search</field>
+      <field name="model">counter.counter.line</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="address_owner"/>
+          <field name="counter_name_id"/>
+          <field name="inspector_id"/>
+          <filter name="cold_water" string="Усны тоолуур" domain="[('counter_category', '=', 'counter')]"/>
+          <filter name="assigned_to_me" string="Надад хуваарилсан"
+                  domain="[('inspector_id.user_id', '=', uid)]"/>
+          <filter name="hot_water" string="Дулааны тоолуур"
+                  domain="[('counter_category', '=', 'thermal_counter')]"/>
+          <group expand="0" string="Group By...">
+            <filter string="Тоот" name="address_id_group" domain="[]" context="{'group_by':'address_id'}"/>
+            <filter string="Ангилал" name="category_group" domain="[]"
+                    context="{'group_by':'counter_category'}"/>
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]"
+                    context="{'group_by':'inspector_id'}"/>
+            <filter string="Тоолуурын нэр" name="counter_name_id_group" domain="[]"
+                    context="{'group_by':'counter_name_id'}"/>
+          </group>
+          <searchpanel>
+            <field name="inspector_id" options="{'no_create': True}"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+    <record id="action_counter_line" model="ir.actions.act_window">
+      <field name="name">Тоолуурын заалт</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter.line</field>
+      <field name="view_mode">tree,graph</field>
+      <field name="context">
+        {
+        'search_default_inspector_id_group': 1
+        }
+      </field>
+    </record>
+
+    <!--    counter.counter.line    -->
+    <record id="view_counter_usage_division_form" model="ir.ui.view">
+      <field name="name">counter.counter.usage.division.form</field>
+      <field name="model">counter.counter.usage.division</field>
+      <field name="arch" type="xml">
+        <form string="Counter Usage Division">
+          <sheet>
+            <separator string="Хэрэглээ хуваах"/>
+            <group>
+              <field name="counter_id" options="{'no_create': True}"/>
+
+              <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+              <field name="pricelist_type_id" options="{'no_create': True, 'no_open': True}"/>
+              <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+              <field name="percent"/>
+              <!-- Additional fields can be added here if needed -->
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_counter_usage_division_tree" model="ir.ui.view">
+      <field name="name">counter.counter.usage.division.tree</field>
+      <field name="model">counter.counter.usage.division</field>
+      <field name="arch" type="xml">
+        <tree string="Counter Usage Divisions" export_xlsx="false">
+          <field name="counter_id"/>
+          <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="pricelist_type_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="percent"/>
+          <!-- Additional fields can be listed here -->
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_counter_usage_division" model="ir.actions.act_window">
+      <field name="name">Тариф хуваах</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter.usage.division</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="counter_counter_line_group_form" model="ir.ui.view">
+      <field name="name">counter.counter.line.group.form</field>
+      <field name="model">counter.counter.line.group</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <field name="created_lines" invisible="1"/>
+            <button name="close" string="Хаах" type="object" class="btn-primary" states="draft"
+                    icon="fa-lock" attrs="{'invisible': ['|',('created_lines', '=', False)]}"
+                    groups="ub_kontor.group_kontor_accountant"/>
+            <button name="confirm" string="Батлах" type="object" class="btn-primary" states="closed"
+                    groups="ub_kontor.group_kontor_accountant"/>
+            <button name="done" string="Дуусгах" type="object" class="btn-primary" states="confirmed"
+                    groups="ub_kontor.group_kontor_accountant"/>
+
+            <button name="create_details" string="Заалтууд үүсгэх" type="object" class="btn-primary"
+                    states="draft" icon="fa-plus-circle" groups="ub_kontor.group_kontor_accountant"/>
+            <button name="update_details_by_xls" string="Excel-ээс заалт оруулах" type="object"
+                    class="btn-primary" states="draft" icon="fa-file-excel-o"
+                    attrs="{'invisible': ['|',('created_lines', '=', False)]}"
+                    groups="ub_kontor.group_kontor_accountant"/>
+
+            <button name="draft" string="Ноороглох" type="object" states="confirmed,closed"
+                    groups="ub_kontor.group_kontor_accountant"/>
+
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <separator string="Тоолуурын заалтын багц"/>
+            <group>
+              <group>
+                <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="year" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="company_id" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                       options="{'no_create': True}"/>
+                <field name="close_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+              <group>
+                <field name="month" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="address_type" readonly="1"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Мөр">
+                <button name="show_details" string="Дэлгэрэнгүй харах" type="object" class="btn-primary"
+                        icon="fa-search"/>
+                <field name="line_ids">
+                  <tree export_xlsx="false">
+                    <field name="address_id" options="{'no_create': True}"/>
+                    <field name="counter_name_id" options="{'no_create': True}"/>
+                    <field name="now_counter" sum="Эхний заалтын нийлбэр"/>
+                    <field name="last_counter" sum="Сүүлийн заалтын нийлбэр"/>
+                    <field name="difference" sum="Зөрүү нийлбэр"/>
+                    <field name="fraction" sum="Задгай нийлбэр"/>
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="counter_counter_line_group_tree" model="ir.ui.view">
+      <field name="name">counter.counter.line.group.tree</field>
+      <field name="model">counter.counter.line.group</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false">
+          <field name="name"/>
+          <field name="year"/>
+          <field name="month"/>
+          <field name="address_type" readonly="1"/>
+          <field name="company_id" options="{'no_create': True}"/>
+          <field name="state"/>
+          <button name="show_details" string="Дэлгэрэнгүй харах" type="object" class="btn-primary"
+                  icon="fa-search"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_counter_counter_line_group" model="ir.actions.act_window">
+      <field name="name">Тоолуурын заалт</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">counter.counter.line.group</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_pay_receipt_address_view_graph" model="ir.ui.view">
+      <field name="name">pay.receipt.address.view.graph</field>
+      <field name="model">pay.receipt.address.view</field>
+      <field name="arch" type="xml">
+        <graph>
+          <field name="apartment_id"/>
+          <field name="amount" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_view_search" model="ir.ui.view">
+      <field name="name">pay.receipt.address.view.search</field>
+      <field name="model">pay.receipt.address.view</field>
+      <field name="arch" type="xml">
+        <search>
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="apartment_id" options="{'no_create': True}"/>-->
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+          <group expand="0" string="Group By...">
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]" context="{'group_by':'inspector_id'}"/>
+            <filter string="Байр" name="apartment_id_group" domain="[]" context="{'group_by':'apartment_id'}"/>
+          </group>
+          <!-- <searchpanel>
+              <field name="duureg_id" options="{'no_create': True}"/>
+              <field name="horoo_id" options="{'no_create': True}"/>
+          </searchpanel> -->
+        </search>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_view_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.address.view.tree</field>
+      <field name="model">pay.receipt.address.view</field>
+      <field name="arch" type="xml">
+        <tree default_order="apartment_code, address_address asc" export_xlsx="false">
+          <!--                    <header>-->
+          <!--                        <button name="create_invoice" type="object" string="Нэхэмжлэл үүсгэх" class="btn-primary"/>-->
+          <!--                        <button name="post_invoice" type="object" string="Нэхэмжлэл батлах" class="btn-primary"/>-->
+          <!--                    </header>-->
+          <!--                    <field name="apartment_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="amount" sum="Дүн"/>
+          <field name="noat" sum="НӨАТ"/>
+          <field name="total_amount" sum="Нийт дүн"/>
+          <field name="state"/>
+          <field name="inspector_id" options="{'no_create': True, 'no_open': True}"/>
+          <!--                    <field name="invoice_id" options="{'no_create': True}"/>-->
+          <field name="receipt_id" invisible="1" options="{'no_create': True}"/>
+
+          <field name="horoo_id" invisible="1" options="{'no_create': True}"/>
+          <field name="duureg_id" invisible="1" options="{'no_create': True}"/>
+          <field name="partner_id" invisible="1" options="{'no_create': True}"/>
+          <!--                    <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object" class="btn-primary"/>-->
+
+        </tree>
+      </field>
+    </record>
+    <record id="view_pay_receipt_address_view_form" model="ir.ui.view">
+      <field name="name">pay.receipt.address.view.form</field>
+      <field name="model">pay.receipt.address.view</field>
+      <field name="arch" type="xml">
+        <form>
+          <header>
+            <!--                        <button name="action_get_bank_json" string="Төрийн банк JSON файл" type="object" class="btn-primary"/>-->
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="address_id" options="{'no_create': True}"
+                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="receipt_id" options="{'no_create': True}"
+                       attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+              </group>
+              <group>
+                <field name="counter_qty" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="family" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="noat" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="total_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <!--                                <field name="invoice_id" options="{'no_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+              </group>
+            </group>
+            <notebook>
+              <page string="Задаргаа">
+                <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                  <tree editable="bottoms" export_xlsx="false">
+                    <field name="name"/>
+                    <field name="service_type_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="uom_id" invisible="1" options="{'no_create': True}"/>
+                    <field name="price" invisible="1"/>
+                    <field name="usage"/>
+                    <field name="transition_coef"/>
+                    <field name="days"/>
+                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="price"/>
+                    <field name="amount" sum="Дүн"/>
+                    <field name="noat" sum="НӨАТ"/>
+                    <field name="total_amount" sum="Нийт дүн"/>
+
+                    <field name="now_counter" invisible="1"/>
+                    <field name="last_counter" invisible="1"/>
+                    <field name="difference_counter" invisible="1"/>
+                    <field name="fraction_counter" invisible="1"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="action_pay_receipt_address_view" model="ir.actions.act_window">
+      <field name="name">Төлбөрийн баримт (Тоот)</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt.address.view</field>
+      <field name="view_mode">tree,form,graph</field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_view_search" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.view.search</field>
+      <field name="model">pay.receipt.address.line.view</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <!--                    <field name="address_id"/>-->
+          <field name="service_type_id"/>
+          <group expand="0" string="Group By...">
+            <filter string="Байцаагч" name="inspector_id_group" domain="[]" context="{'group_by':'inspector_id'}"/>
+            <filter string="Байр" name="apartment_id_group" domain="[]" context="{'group_by':'apartment_id'}"/>
+            <filter string="Үйлчилгээний төрөл" name="service_type_id_group" domain="[]"
+                    context="{'group_by':'service_type_id'}"/>
+            <filter string="Тариф" name="pricelist_id_group" domain="[]" context="{'group_by':'pricelist_id'}"/>
+            <filter string="Нэр" name="name_group" domain="[]" context="{'group_by':'name'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_view_graph" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.view.graph</field>
+      <field name="model">pay.receipt.address.line.view</field>
+      <field name="arch" type="xml">
+        <graph>
+          <field name="total_amount" type="measure"/>
+          <field name="service_type_id"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="view_pay_receipt_address_line_view_tree" model="ir.ui.view">
+      <field name="name">pay.receipt.address.line.view.tree</field>
+      <field name="model">pay.receipt.address.line.view</field>
+      <field name="arch" type="xml">
+        <tree default_order="apartment_code, address_address asc" export_xlsx="false">
+          <!--                    <header>-->
+          <!--                        <button name="%(ub_kontor.action_pay_receipt_change_days)d" string="Хоног өөрчлөх" class="btn-primary" type="action"/>-->
+          <!--                    </header>-->
+          <field name="name"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <!--                    <field name="apartment_id" invisible="1" options="{'no_create': True}"/>-->
+          <field name="inspector_id" invisible="1" options="{'no_create': True, 'no_open': True}"/>
+          <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="company_id" options="{'no_create': True}"/>
+          <field name="year"/>
+          <field name="month"/>
+          <field name="price"/>
+          <field name="uom_id" options="{'no_create': True}"/>
+          <field name="days"/>
+          <field name="days_changed"/>
+          <field name="amount"/>
+          <field name="total_amount"/>
+          <field name="pricelist_days"/>
+          <field name="started_amount"/>
+          <field name="service_deduction_group_id" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_pay_receipt_address_line_view" model="ir.actions.act_window">
+      <field name="name">Төлбөрийн баримтын задаргаа</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">pay.receipt.address.line.view</field>
+      <field name="view_mode">tree,form,graph</field>
+    </record>
+
+  </data>
+</odoo>

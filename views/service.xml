@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!--        <record id="view_service_form" model="ir.ui.view">-->
+    <!--            <field name="name">service.service.form</field>-->
+    <!--            <field name="model">service.service</field>-->
+    <!--            <field name="arch" type="xml">-->
+    <!--                <form string="Service">-->
+    <!--                    <sheet>-->
+    <!--                        <group>-->
+    <!--                            <field name="org_id"/>-->
+    <!--                            <field name="type_id"/>-->
+    <!--                            <field name="address_type"/>-->
+    <!--                            <field name="pricelist_id"/>-->
+    <!--                            &lt;!&ndash; Uncomment or add additional fields as needed &ndash;&gt;-->
+    <!--                            &lt;!&ndash; <field name="oum_id"/> &ndash;&gt;-->
+    <!--                            &lt;!&ndash; <field name="tailber"/> &ndash;&gt;-->
+    <!--                        </group>-->
+    <!--                    </sheet>-->
+    <!--                </form>-->
+    <!--            </field>-->
+    <!--        </record>-->
+    <!--        <record id="view_service_tree" model="ir.ui.view">-->
+    <!--            <field name="name">service.service.tree</field>-->
+    <!--            <field name="model">service.service</field>-->
+    <!--            <field name="arch" type="xml">-->
+    <!--                <tree export_xlsx="false" string="Services">-->
+    <!--                    <field name="org_id"/>-->
+    <!--                    <field name="type_id"/>-->
+    <!--                    <field name="address_type"/>-->
+    <!--                    <field name="pricelist_id"/>-->
+    <!--                </tree>-->
+    <!--            </field>-->
+    <!--        </record>-->
+    <!--         <record id="action_service" model="ir.actions.act_window">-->
+    <!--            <field name="name">Үйлчилгээ</field>-->
+    <!--            <field name="type">ir.actions.act_window</field>-->
+    <!--            <field name="res_model">service.service</field>-->
+    <!--            <field name="view_mode">tree,form</field>-->
+    <!--        </record>-->
+
+    <record id="view_service_address_search" model="ir.ui.view">
+      <field name="name">service.address.search</field>
+      <field name="model">service.address</field>
+      <field name="arch" type="xml">
+        <search>
+          <!--                    <field name="address_id" filter_domain="[('address_id.address', '=', self)]"/>-->
+          <!--                    <field name="apartment_id" filter_domain="[('apartment_id.code', '=', self)]"/>-->
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+          <field name="address_code"/>
+          <field name="address_name"/>
+          <field name="service_type_id"/>
+          <separator/>
+          <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+          <separator/>
+          <group expand="0" string="Group By...">
+            <filter string="Жил" name="year_group" domain="[]" context="{'group_by':'year'}"/>
+            <filter string="Сар" name="month_group" domain="[]" context="{'group_by':'month'}"/>
+          </group>
+          <searchpanel>
+            <field name="inspector_id" options="{'no_create': True}"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+
+    <!--        'service.address            -->
+    <record id="view_service_address_form" model="ir.ui.view">
+      <field name="name">service.address.form</field>
+      <field name="model">service.address</field>
+      <field name="arch" type="xml">
+        <form string="Service Address">
+          <sheet>
+            <field name="type" readonly="1" invisible="1"/>
+            <separator string="Нэмэлт үйлчилгээ"
+                       attrs="{'invisible': [('type', '!=', 'additional_service')]}"/>
+            <separator string="Хэрэглэгчийн үйлчилгээ"
+                       attrs="{'invisible': [('type', '!=', 'user_service')]}"/>
+            <group>
+              <group>
+                <field name="apartment_id" options="{'no_create': True}"/>
+                <field name="address_id" options="{'no_create': True}"/>
+                <field name="org_id" options="{'no_create': True}"/>
+                <field name="service_type_id" options="{'no_create': True}"/>
+                <field name="is_noat"/>
+                <field name="year"
+                       attrs="{'invisible': [('type', '!=', 'additional_service')],  'required': [('type', '=', 'additional_service')]}"/>
+                <field name="month"
+                       attrs="{'invisible': [('type', '!=', 'additional_service')],  'required': [('type', '=', 'additional_service')]}"/>
+              </group>
+              <group>
+                <field name="percent" attrs="{'invisible': [('type', '=', 'additional_service')]}"/>
+                <field name="value"/>
+                <field name="description"/>
+                <field name="pricelist_id"
+                       attrs="{'invisible': [('type', '=', 'additional_service')], 'required': [('type', '!=', 'additional_service')]}"
+                       options="{'no_create': True, 'no_open': True}"/>
+                <field name="price"
+                       attrs="{'invisible': [('type', '=', 'user_service')], 'required': [('type', '!=', 'user_service')]}"/>
+                <field name="day"/>
+              </group>
+
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_service_address_graph" model="ir.ui.view">
+      <field name="name">service.address.graph</field>
+      <field name="model">service.address</field>
+      <field name="arch" type="xml">
+        <graph type="pie">
+          <field name="service_type_id"/>
+        </graph>
+      </field>
+    </record>
+
+    <record id="view_service_address_tree" model="ir.ui.view">
+      <field name="name">service.address.tree</field>
+      <field name="model">service.address</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Service Addresses" multi_edit="1"
+              default_order="apartment_code, address_address asc">
+          <header>
+            <button name="change_days" type="object" class="btn-primary" string="Өдөр өөрчлөх"/>
+          </header>
+          <field name="company_id" options="{'no_create': True}"/>
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="address_surname"/>
+          <field name="address_name"/>
+          <!-- <field name="org_name"/> -->
+          <field name="org_id"/>
+          <field name="service_type_id" options="{'no_create': True}" domain="([('org_id', '=', org_id)])"/>
+          <field name="type" invisible="1"/>
+          <field name="pricelist_id" attrs="{'invisible': [('type', '=', 'additional_service')]}"/>
+          <field name="value" sum="Нийт утга"/>
+          <field name="percent" sum="Нийт хувь"/>
+          <field name="day" sum="Нийт өдөр"/>
+          <field name="price" sum="Нийт үнийн дүн"/>
+          <field name="is_noat"/>
+          <!--<field name="year"/> -->
+          <!--<field name="month"/>-->
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_additional_service_tree" model="ir.ui.view">
+      <field name="name">additional.service.tree</field>
+      <field name="model">service.address</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Service Addresses" multi_edit="1"
+              default_order="apartment_code, address_address asc">
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <!--                    <field name="apartment_id" invisible="1" options="{'no_create': True}"/>-->
+          <!--                    <field name="address_id" options="{'no_create': True}"/>-->
+          <field name="address_surname"/>
+          <field name="address_name"/>
+          <field name="org_name"/>
+          <field name="service_type_id" options="{'no_create': True}"/>
+          <field name="value" sum="Нийт утга"/>
+          <field name="percent" sum="Нийт хувь"/>
+
+          <field name="day" sum="Нийт өдөр"/>
+          <field name="price" sum="Нийт үнийн дүн"/>
+          <!--                    <field name="pricelist_id"/>-->
+          <field name="is_noat"/>
+          <field name="type" readonly="1" invisible="1"/>
+          <field name="company_id" options="{'no_create': True}"/>
+          <!--                    <field name="year"/>-->
+          <!--                    <field name="month"/>-->
+          <field name="active" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_additional_service" model="ir.actions.act_window">
+      <field name="name">Нэмэлт үйлчилгээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.address</field>
+      <field name="view_mode">tree,form,graph</field>
+      <field name="context">{
+        'default_type': 'additional_service',
+        'create_by_address_ids': True,
+        'search_default_year_group': 1,
+        'search_default_month_group': 1
+        }
+      </field>
+      <field name="domain">[('type', '=', 'additional_service')]</field>
+      <field name="view_id" ref="view_additional_service_tree"/>
+    </record>
+
+    <record id="view_service_deduction_form" model="ir.ui.view">
+      <field name="name">service.deduction.form</field>
+      <field name="model">service.deduction</field>
+      <field name="arch" type="xml">
+        <form string="Service deduction">
+          <sheet>
+            <group>
+              <group>
+                <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="calc_type" widget="radio" options="{'horizontal': true}"/>
+                <field name="type" widget="radio" options="{'horizontal': true}"/>
+                <field name="value"/>
+                <field name="amount" attrs="{'invisible': [('calc_type', '!=', 'amount')]}"/>
+                <field name="company_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="address_type"/>
+              </group>
+              <group>
+                <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                <field name="year"/>
+                <field name="month"/>
+                <field name="description"/>
+                <field name="is_noat_change"/>
+              </group>
+              <field name="address_ids">
+                <tree export_xlsx="false" default_order="apartment_code, address asc">
+                  <field name="apartment_code"/>
+                  <field name="address"/>
+                  <!--                                    <field name="full_address" options="{'no_create': True, 'no_open': True}"/>-->
+                </tree>
+              </field>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_service_deduction_tree" model="ir.ui.view">
+      <field name="name">service.deduction.tree</field>
+      <field name="model">service.deduction</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Service Addresses" editable="bottom">
+          <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+          <field name="calc_type"/>
+          <field name="type"/>
+          <field name="year"/>
+          <field name="month"/>
+          <field name="is_noat_change"/>
+          <field name="group_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_service_deduction" model="ir.actions.act_window">
+      <field name="name">Хасагдах хэрэглээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.deduction</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <record id="view_service_deduction_group_form" model="ir.ui.view">
+      <field name="name">service.deduction.group.form</field>
+      <field name="model">service.deduction.group</field>
+      <field name="arch" type="xml">
+        <form string="Хасагдах хэрэглээ">
+          <header>
+            <button name="update_pay_receipt" string="Төлбөл зохихруу гаргах" type="object"
+                    class="btn-primary" states="draft,processing"/>
+            <button name="confirm" string="Батлах" type="object" class="btn-primary" states="processing"
+                    confrim="Энэ үйлдлийг хийснээр хасагдах хэрэглээнд дахиж өөрчлөлт орохгүй болохыг анхаарна уу"/>
+            <button name="draft" string="Ноороглох" type="object" states="processing"/>
+            <button name="draft" string="Ноороглох" type="object" states="confirmed"/>
+            <field name="state" widget="statusbar" nolabel="1"/>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="year" attrs="{'readonly': [('state', 'in', ('confirmed'))]}"/>
+                <field name="company_id" attrs="{'readonly': [('state', 'in', ('confirmed'))]}"/>
+              </group>
+              <group>
+                <field name="month" attrs="{'readonly': [('state', 'in', ('confirmed'))]}"/>
+                <field name="address_type" attrs="{'readonly': [('state', 'in', ('confirmed'))]}"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Мөр">
+                <field name="line_ids" attrs="{'readonly': [('state', 'in', ('confirmed'))]}">
+                  <tree export_xlsx="false">
+                    <field name="service_type_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="pricelist_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="calc_type"/>
+                    <field name="type"/>
+                    <field name="year"/>
+                    <field name="month"/>
+                    <field name="is_noat_change"/>
+                    <field name="address_ids" widget="many2many_tags"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_service_deduction_group_tree" model="ir.ui.view">
+      <field name="name">service.deduction.group.tree</field>
+      <field name="model">service.deduction.group</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Хасагдах хэрэглээ">
+          <field name="year"/>
+          <field name="month"/>
+          <field name="company_id"/>
+          <field name="address_type"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_service_deduction_group" model="ir.actions.act_window">
+      <field name="name">Хасагдах хэрэглээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.deduction.group</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_user_service" model="ir.actions.act_window">
+      <field name="name">Хэрэглэгчийн үйлчилгээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.address</field>
+      <field name="view_mode">tree,form,graph</field>
+      <field name="context">{
+        'default_type': 'user_service',
+        'create_by_address_ids': True,
+        }
+      </field>
+      <field name="domain">[('type', '=', 'user_service')]</field>
+      <field name="view_id" ref="view_service_address_tree"/>
+
+    </record>
+
+
+    <record id="view_service_payment_search" model="ir.ui.view">
+      <field name="name">service.payment.search</field>
+      <field name="model">service.payment</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="address_id" filter_domain="[('address_id.address', '=', self)]"/>
+          <field name="apartment_id" filter_domain="[('apartment_id.code', '=', self)]"/>
+          <field name="service_type_id"/>
+          <field name="work_name"/>
+          <separator/>
+          <filter string="Архивлагдсан" name="inactive" domain="[('active', '=', False)]"/>
+          <separator/>
+          <group expand="0" string="Group By...">
+            <filter string="Жил" name="year_group" domain="[]" context="{'group_by':'year'}"/>
+            <filter string="Сар" name="month_group" domain="[]" context="{'group_by':'month'}"/>
+          </group>
+          <searchpanel>
+            <field name="inspector_id"/>
+          </searchpanel>
+        </search>
+      </field>
+    </record>
+
+    <record id="view_service_payment_graph" model="ir.ui.view">
+      <field name="name">service.payment.graph</field>
+      <field name="model">service.payment</field>
+      <field name="arch" type="xml">
+        <graph string="Төлбөрт үйлчилгээ">
+          <field name="employee_id"/>
+          <field name="total_amount" type="measure"/>
+        </graph>
+      </field>
+    </record>
+    <record id="view_service_payment_tree" model="ir.ui.view">
+      <field name="name">service.payment.tree</field>
+      <field name="model">service.payment</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" string="Төлбөрт үйлчилгээ" default_order="apartment_code, address_address asc">
+          <field name="address_code"/>
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="owner_name"/>
+          <field name="company_id" invisible="1" options="{'no_create': True}"/>
+          <field name="service_type_id" options="{'no_create': True}"/>
+          <field name="number"/>
+          <field name="work_name"/>
+          <field name="served_date"/>
+          <field name="material_name"/>
+          <field name="material_amount"/>
+          <field name="work_amount"/>
+          <field name="water_heating_price"/>
+          <field name="heating_price"/>
+          <field name="bill_amount"/>
+          <field name="employee_id" options="{'no_create': True}"/>
+          <field name="total_amount"/>
+          <field name="date"/>
+
+          <!--                    <field name="user_id" invisible="1" options="{'no_create': True}"/>-->
+          <!--                    <field name="number"/>-->
+          <!--                    <field name="work_amount"/>-->
+          <!--                    <field name="year" invisible="0"/>-->
+          <!--                    <field name="month" invisible="0"/>-->
+          <!--                    <field name="description" invisible="1"/>-->
+          <!--                    <field name="active" invisible="1"/>-->
+        </tree>
+      </field>
+    </record>
+    <record id="view_service_payment_form" model="ir.ui.view">
+      <field name="name">service.payment.form</field>
+      <field name="model">service.payment</field>
+      <field name="arch" type="xml">
+        <form string="Төлбөрт үйлчилгээ">
+          <sheet>
+            <separator string="Төлбөрт үйлчилгээ"/>
+            <group>
+              <group>
+                <field name="address_id" options="{'no_create': True}"/>
+                <field name="user_id" invisible="1" options="{'no_create': True}"/>
+                <field name="service_type"/>
+                <!--                                <field name="slip_number"/>-->
+              </group>
+              <group>
+                <field name="apartment_id" options="{'no_create': True}"/>
+                <field name="company_id" options="{'no_create': True}"/>
+              </group>
+            </group>
+            <group>
+              <group>
+
+                <field name="service_type_id" options="{'no_create': True}"/>
+                <field name="number"/>
+                <field name="employee_id" options="{'no_create': True}"/>
+                <field name="work_name"/>
+                <field name="material_name"/>
+                <field name="date"/>
+                <field name="served_date"/>
+                <field name="year"/>
+                <field name="month"/>
+              </group>
+              <group>
+                <field name="work_amount"/>
+                <field name="material_amount"/>
+                <field name="bill_amount"/>
+                <field name="heating_price"/>
+                <field name="water_heating_price"/>
+                <field name="total_amount"/>
+              </group>
+            </group>
+
+            <group>
+              <field name="description"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="action_service_payment" model="ir.actions.act_window">
+      <field name="name">Төлбөрт үйлчилгээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.payment</field>
+      <field name="view_mode">tree,form,graph</field>
+      <field name="context">{
+        'search_default_year_group': 1,
+        'search_default_month_group': 1
+        }
+      </field>
+    </record>
+
+    <record id="view_service_timed_condition_form" model="ir.ui.view">
+      <field name="name">service.timed.condition.form</field>
+      <field name="model">service.timed.condition</field>
+      <field name="arch" type="xml">
+        <form string="Хугацаат үйлчилгээ">
+          <sheet>
+            <group>
+              <group>
+                <field name="company_id"/>
+                <field name="description"/>
+                <field name="address_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+              </group>
+              <group>
+                <field name="org_id"/>
+                <field name="service_type_id"/>
+                <field name="total_amount"/>
+                <field name="active"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <record id="view_service_timed_condition_search" model="ir.ui.view">
+      <field name="name">service.timed.condition.search</field>
+      <field name="model">service.timed.condition</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="apartment_code" filter_domain="[('apartment_code', '=', self)]"/>
+          <field name="address_address" filter_domain="[('address_address', '=', self)]"/>
+        </search>
+      </field>
+    </record>
+    <record id="view_service_timed_condition_tree" model="ir.ui.view">
+      <field name="name">service.timed.condition.tree</field>
+      <field name="model">service.timed.condition</field>
+      <field name="arch" type="xml">
+        <tree export_xlsx="false" default_order="apartment_code, address_address asc">
+          <field name="apartment_code"/>
+          <field name="address_address"/>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="service_type_id"/>
+          <field name="total_amount"/>
+          <field name="active"/>
+        </tree>
+      </field>
+    </record>
+    <record id="action_service_timed_condition" model="ir.actions.act_window">
+      <field name="name">Хугацаат үйлчилгээ</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">service.timed.condition</field>
+      <field name="view_mode">tree,form,graph</field>
+    </record>
+
+
+  </data>
+</odoo>

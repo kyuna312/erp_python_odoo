@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- A4 Portrait Paper Format Definition -->
+    <record id="paperformat_a4_portrait" model="report.paperformat">
+        <field name="name">A4 Portrait</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="margin_top">5</field> <!-- Set top margin to 5 mm -->
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/> <!-- Disable header line -->
+        <field name="header_spacing">0</field> <!-- Header spacing adjustment -->
+        <field name="dpi">90</field> <!-- Output DPI for better resolution -->
+    </record>
+
+    <!-- PDF Report Wizard Form View -->
+    <record id="view_not_pay_apartment_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">not.pay.apartment.pdf.report.wizard.form</field>
+        <field name="model">not.pay.apartment.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="month"/>
+                            <field name="inspector_ids" widget="many2many_tags"/>
+                            <field name="apartment_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="download" type="object" string="Тайлан харах" class="btn-primary"/>
+                    <button name="import_xls" type="object" string="Excel татах" class="btn-primary"/>
+                    <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Report Action Definition -->
+    <record id="action_not_pay_apartment_pdf_report_template" model="ir.actions.report">
+        <field name="name">Хөлс төлөөгүй байрны жагсаалт</field>
+        <field name="model">not.pay.apartment.pdf.report.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.not_pay_apartment_pdf_report_template</field>
+        <field name="paperformat_id" ref="paperformat_a4_portrait"/> <!-- Reference A4 portrait paper format -->
+    </record>
+
+    <!-- Window Action for PDF Report Wizard -->
+    <record id="action_not_pay_apartment_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Хөлс төлөөгүй байрны жагсаалт</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">not.pay.apartment.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <!-- Menu Item for PDF Report Wizard -->
+    <menuitem
+        id="menu_not_pay_apartment_pdf_report_wizard"
+        name="Хөлс төлөөгүй байрны жагсаалт"
+        parent="menu_report"
+        action="ub_kontor.action_not_pay_apartment_pdf_report_wizard"
+        sequence="10"
+    />
+</odoo>

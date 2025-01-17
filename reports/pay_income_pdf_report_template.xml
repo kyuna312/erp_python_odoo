@@ -1,0 +1,161 @@
+<odoo>
+  <template id="template_pay_income_pdf_report">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4 landscape; margin: 20mm; }
+        .page { font-family: Arial, sans-serif; font-size: 12px; margin: 10px; }
+        .header, .footer, .table th, .table td { font-size: 12px; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th, .table td { padding: 5px; border: 1px solid #ddd; }
+        .text-end { text-align: right; }
+        .text-start { text-align: left; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .mb-0 { margin-bottom: 0; }
+        .dotted-line {
+        border-bottom: 1px dotted black !important;
+        display: inline-block !important;
+        width: 150px !important;
+        margin-left: 150px !important;
+        }
+      </style>
+
+      <div class="page">
+        <!-- Header Section -->
+        <div class="row pb-2">
+          <div class="col-4 text-start">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" style="width: 100px; height: auto;"/>
+            </t>
+          </div>
+          <div class="col-8 text-end">
+            <p class="mb-0 fw-bold" style="font-size: 13px;">
+              <t t-esc="company_name"/>
+              <t t-esc="income_year"/>
+              оны
+              <t t-esc="month"/>
+              сарын орлого сараар тайлан
+            </p>
+          </div>
+        </div>
+
+        <!-- Report Date Section -->
+        <div class="row pb-2">
+          <div class="col-4 text-start">
+            <p class="mb-0" style="font-size: 13px;">
+              Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+          </div>
+          <div class="col-8 text-end">
+            <p>
+              Тайлан гаргасан:
+              <t t-esc="current_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table">
+          <thead>
+            <tr>
+              <t t-foreach="header_data" t-as="header">
+                <th t-att-rowspan="header.get('rowspan', 1)"
+                    t-att-colspan="header.get('colspan', 1)"
+                    class="text-center fw-bold">
+                  <t t-esc="header['header_title']"/>
+                </th>
+              </t>
+            </tr>
+            <tr>
+              <t t-foreach="header_data" t-as="header">
+                <t t-foreach="header.get('sub_headers', [])" t-as="sub_header">
+                  <th class="text-center fw-bold">
+                    <t t-esc="sub_header['account_name']"/>
+                  </th>
+                </t>
+              </t>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data Rows -->
+            <t t-if="main_data">
+              <t t-set="total_amount" t-value="0.0"/>
+              <t t-foreach="main_data" t-as="data">
+                <tr>
+                  <!-- Paid Date Column -->
+                  <td>
+                    <t t-esc="data.get('paid_date', '0')"/>
+                  </td>
+
+                  <!-- Header Data Columns -->
+                  <t t-foreach="header_data" t-as="header">
+                    <t t-foreach="header.get('sub_headers', [])" t-as="sub_header">
+                      <t t-set="key"
+                         t-value="'{}_{}_{}'.format(header['header_title'], sub_header['account_name'], sub_header['account_id'])"/>
+                      <td class="text-end">
+                        <t t-set="value" t-value="data.get(key, 0.0)"/>
+                        <t t-esc="value" t-options="{'widget': 'float', 'precision': 2}"/>
+                      </td>
+                    </t>
+                  </t>
+
+                  <!-- Total Amount Column -->
+                  <td class="text-end">
+                    <t t-set="row_total" t-value="data.get('total_amount', 0.0)"/>
+                    <t t-esc="row_total" t-options="{'widget': 'float', 'precision': 2}"/>
+                    <t t-set="total_amount" t-value="total_amount + row_total"/>
+                  </td>
+                </tr>
+              </t>
+
+              <!-- Summary Row -->
+              <tr>
+                <td class="fw-bold text-start">Нийт</td>
+                <t t-foreach="header_data" t-as="header">
+                  <t t-foreach="header.get('sub_headers', [])" t-as="sub_header">
+                    <t t-set="key"
+                       t-value="'{}_{}_{}'.format(header['header_title'], sub_header['account_name'], sub_header['account_id'])"/>
+                    <td class="text-end">
+                      <t t-set="sub_total" t-value="sum(data.get(key, 0.0) for data in main_data)"/>
+                      <t t-esc="sub_total" t-options="{'widget': 'float', 'precision': 2}"/>
+                    </td>
+                  </t>
+                </t>
+                <td class="fw-bold text-end">
+                  <t t-esc="total_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+              </tr>
+            </t>
+
+            <!-- Placeholder for No Data -->
+            <t t-if="not main_data">
+              <tr>
+                <td>0.00</td>
+                <t t-foreach="header_data" t-as="header">
+                  <t t-foreach="header.get('sub_headers', [])" t-as="sub_header">
+                    <td>0.00</td>
+                  </t>
+                </t>
+                <td>0.00</td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+        <!-- Footer Section -->
+        <div class="row pt-2">
+          <div class="col-12 text-end">
+            <p class="mb-2">
+              <strong>Тайлан гаргасан:</strong>
+              <span class="dotted-line"></span>
+            </p>
+            <p class="mb-2">
+              <strong>Хянасан:</strong>
+              <span class="dotted-line"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>

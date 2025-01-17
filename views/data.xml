@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.config_parameter" id="kontor_web">
+            <field name="key">ub_kontor.kontor_web</field>
+            <field name="value">https://tapi.ubkontor.mn</field>
+        </record>
+         <record id="kontor_token" model="ir.config_parameter">
+            <field name="key">kontor.token</field>
+            <field name="value">kdisoe9e93eiiwow;;830woieafj24</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,70 @@
+<odoo>
+  <data>
+    <!-- Form View for Osnaug Pay Receipt -->
+    <record id="view_osnaug_pay_receipt_form" model="ir.ui.view">
+      <field name="name">osnaug.pay.receipt.form</field>
+      <field name="model">osnaug.pay.receipt</field>
+      <field name="arch" type="xml">
+        <form string="ОСНААУГ Санхүүгийн Төлбөрийн баримт">
+          <sheet>
+            <group>
+              <field name="address_type"/>
+              <field name="name"/>
+              <field name="year"/>
+              <field name="month"/>
+              <field name="state"/>
+              <field name="company_id"/>
+              <field name="amount"/>
+              <field name="total_amount"/>
+              <field name="date"/>
+            </group>
+            <footer>
+              <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+            </footer>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Search View for Osnaug Pay Receipt -->
+    <record id="view_osnaug_pay_receipt_search" model="ir.ui.view">
+      <field name="name">osnaug.pay.receipt.search</field>
+      <field name="model">osnaug.pay.receipt</field>
+      <field name="arch" type="xml">
+        <search string="ОСНААУГ Санхүүгийн Төлбөрийн баримт хайлт">
+          <field name="year" string="Жил"/>
+          <field name="month" string="Сар"/>
+          <field name="address_type" string="Тоотын төрөл"/>
+          <field name="state" string="Төлөв"/>
+        </search>
+      </field>
+    </record>
+
+    <!-- Tree View for Osnaug Pay Receipt -->
+    <record id="view_osnaug_pay_receipt_tree" model="ir.ui.view">
+      <field name="name">osnaug.pay.receipt.tree</field>
+      <field name="model">osnaug.pay.receipt</field>
+      <field name="arch" type="xml">
+        <tree string="ОСНААУГ Санхүүгийн Төлбөрийн баримт" default_order="year desc, month desc">
+          <field name="name" string="Нэр"/>
+          <field name="year" string="Жил"/>
+          <field name="month" string="Сар"/>
+          <field name="address_type" string="Тоотын төрөл"/>
+          <field name="state" string="Төлөв"/>
+          <field name="amount" string="Дүн" sum="Нийт дүн"/>
+          <field name="total_amount" string="Нийт Дүн" sum="Нийт дүн"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- Actions for Osnaug Pay Receipt -->
+    <record id="action_osnaug_pay_receipt" model="ir.actions.act_window">
+      <field name="name">ОСНААУГ Санхүүгийн Төлбөрийн баримт</field>
+      <field name="res_model">osnaug.pay.receipt</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="view_osnaug_pay_receipt_search"/>
+      <field name="view_ids"
+             eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_osnaug_pay_receipt_tree')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_osnaug_pay_receipt_form')})]"/>
+    </record>>
+  </data>
+</odoo>

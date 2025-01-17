@@ -1,0 +1,72 @@
+<odoo>
+  <template id="template_heat_report_pdf">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4 landscape; margin: 10mm; }
+        .table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 10px; word-wrap: break-word; }
+        .table th, .table td { padding: 5px; border: 1px solid #ddd; text-align: center; overflow: hidden;
+        text-overflow: ellipsis; white-space: nowrap; }
+        .fw-bold { font-weight: bold; }
+        .text-end { text-align: right !important; }
+      </style>
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-1">
+          <div class="col-6">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" style="width: 120px;"/>
+            </t>
+          </div>
+          <div class="col-6 text-end">
+            <p class="fw-bold">
+              <t t-esc="company_name"/>
+              <t t-esc="heat_report_date"/>
+              сарын Дулааны мэдээ
+            </p>
+            <p>Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+            <p>Тайлан гаргасан:
+              <t t-esc="report_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr>
+              <th>Байр</th>
+              <t t-foreach="uom_headers" t-as="header">
+                <th style="white-space: normal;">
+
+                  <t t-esc="header"/>
+                </th>
+              </t>
+              <th>Нийт</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="grouped_data.items()" t-as="group">
+              <tr>
+                <td>
+                  <t t-esc="group[1]['apartment_code']"/>
+                </td>
+                <t t-foreach="uom_headers" t-as="header">
+                  <td class="text-right">
+                    <t t-set="value" t-value="group[1]['uom_data'].get(header, 0)"/>
+                    <t t-esc="value" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </td>
+                </t>
+                <td class="text-right fw-bold">
+                  <t t-set="total" t-value="sum(group[1]['uom_data'].values())"/>
+                  <t t-esc="total" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+      </div>
+    </t>
+  </template>
+</odoo>

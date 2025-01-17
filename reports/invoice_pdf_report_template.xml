@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="template_invoice_pdf_report">
+    <t t-call="web.html_container">
+      <t t-call="web.basic_layout">
+        <style>
+          .page { font-family: Arial, sans-serif; font-size: 10px; margin: 5px; }
+          .header, .footer, .table th, .table td { font-size: 10px; padding: 2px; }
+          .table { width: 100%; border-collapse: collapse; }
+          .table th, .table td { padding: 2px; border: 1px solid black; }
+          .text-end { text-align: right; }
+          .text-center { text-align: center; }
+          .text-start { text-align: left; }
+          .fw-bold { font-weight: bold; }
+        </style>
+
+        <t t-set="counter" t-value="0"/>
+        <t t-foreach="docs" t-as="o">
+          <t t-set="counter" t-value="counter + 1"/>
+          <div class="page">
+            <div class="row pb-1 pt-1">
+              <h5 style="font-size: 14px;"><b>Төлбөрийн нэхэмжлэх № <span t-field="o.company_id"/> - <span t-field="o.name"/></b></h5>
+            </div>
+
+            <div class="row pb-1" style="display: flex;">
+              <div class="col-3">
+                <img t-att-src="image_data_uri(o.company_id.logo)" style="width: 120px; margin-top: 5px;"/>
+              </div>
+              <div class="col-6 text-start">
+                <p>Хэрэглэгчийн нэр: <span t-field="o.address_id.name"/></p>
+                <p>Хаяг: <span t-field="o.address_id"/></p>
+                <p>Эхний үлдэгдэл: <span t-field="o.first_balance"/></p>
+                <p>Хамрах огноо: <span t-field="o.year"/>-<span t-field="o.month"/></p>
+              </div>
+              <div class="col-3 text-end">
+                <p>Хэрэглэгчийн код: <span t-field="o.address_id.code"/></p>
+                <p>Амбүл: <span t-field="o.address_id.family"/></p>
+                <p>Нэхэмжилсэн огноо: <span t-esc="o.create_date.date()"/></p>
+              </div>
+            </div>
+
+            <p><span class="fw-bold">Данс:</span>
+              <t t-foreach="dict_account_list" t-as="account">
+                <span class="ml-2"><t t-esc="account.get('name')"/>: <t t-esc="account.get('number')"/></span>
+              </t>
+            </p>
+
+            <!-- First and Second Tables in the same row -->
+            <div class="row" style="display: flex;  flex-wrap: wrap;">
+              <!-- First Table (always visible) -->
+              <div class="col-9 col-md-9">
+                <table class="table mt-2">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Нэр</th>
+                      <th class="text-center">Хэрэглээ</th>
+                      <th class="text-center">Шилжих коэф</th>
+                      <th class="text-center">Тариф</th>
+                      <th class="text-end">Үнэ</th>
+                      <th class="text-end">Дүн</th>
+                      <th class="text-end">НӨАТ</th>
+                      <th class="text-end">Нийт дүн</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <t t-foreach="o.line_ids" t-as="line">
+                      <tr>
+                        <td class="text-center"><span t-field="line.name"/></td>
+                        <td class="text-center"><span t-field="line.usage"/></td>
+                        <td class="text-center"><span t-field="line.transition_coef"/></td>
+                        <td class="text-center"><span t-field="line.pricelist_id"/></td>
+                        <td class="text-end"><span t-field="line.price"/></td>
+                        <td class="text-end"><span t-field="line.amount"/></td>
+                        <td class="text-end"><span t-field="line.noat"/></td>
+                        <td class="text-end"><span t-field="line.total_amount"/></td>
+                      </tr>
+                    </t>
+                    <tr>
+                      <th colspan="5" class="text-end">Нийт</th>
+                      <th class="text-end"><span t-field="o.amount_untaxed"/></th>
+                      <th class="text-end"><span t-field="o.amount_tax"/></th>
+                      <th class="text-end"><span t-field="o.amount_total"/></th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Second Table (conditional visibility) -->
+              <t t-if="o.counter_line_ids">
+                <div class="col-3 col-md-3">
+                  <table class="table mt-2">
+                    <thead>
+                      <tr>
+                        <th>Тоолуур</th>
+                        <th>Эхний</th>
+                        <th>Эцсийн</th>
+                        <th>Зөрүү</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <t t-foreach="o.counter_line_ids" t-as="line">
+                        <tr>
+                          <td><span t-field="line.counter_name_id"/></td>
+                          <td><span t-field="line.now_counter"/></td>
+                          <td><span t-field="line.last_counter"/></td>
+                          <td><span t-field="line.difference"/></td>
+                        </tr>
+                      </t>
+                    </tbody>
+                  </table>
+                </div>
+              </t>
+            </div>
+
+            <div class="row pt-2 pb-2" style="display: flex;">
+              <div class="col-6">
+                <p>Нийт төлөх дүн (тоогоор, үсгээр): <span t-field="o.last_balance"/> төгрөг</p>
+                <p>Төлбөрийг энэ сарын 20 -ны дотор төлнө үү.</p>
+                <p>Хугацаа хэтэрвэл алданги тооцно.</p>
+              </div>
+              <div class="col-6">
+                <p>Дарга : ..............................................</p>
+                <p>Нягтлан бодогч : ...................................</p>
+                <p>Хүлээн авсан: ....................................</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Page Break after every 2 pages -->
+          <t t-if="counter % 2 == 0">
+            <div style="page-break-after: always;"/>
+          </t>
+        </t>
+      </t>
+    </t>
+  </template>
+</odoo>

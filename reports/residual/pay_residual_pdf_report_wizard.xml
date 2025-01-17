@@ -1,0 +1,59 @@
+<odoo>
+    <!-- Paper format definition -->
+    <record id="paperformat_custom_a4_landscape" model="report.paperformat">
+        <field name="name">Custom A4 Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">5</field> <!-- Set top margin to 5 mm -->
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/> <!-- Optionally disable header line if not needed -->
+        <field name="header_spacing">0</field> <!-- Adjust header spacing if necessary -->
+        <field name="dpi">90</field> <!-- Set output DPI for better resolution -->
+    </record>
+
+    <!-- Form View for the Pay Residual PDF Report Wizard -->
+    <record id="view_pay_residual_pdf_report_wizard_form" model="ir.ui.view">
+        <field name="name">pay.residual.pdf.report.wizard.form</field>
+        <field name="model">pay.residual.pdf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Үлдэгдлийн товч тайлан" paper="a4-l">
+                <sheet>
+                    <group>
+                        <!-- Use better indentation and grouping for form fields -->
+                        <field name="residual_date" required="1"/>
+                    </group>
+                    <footer>
+                        <!-- Optimized button formatting with clear class usage -->
+                        <button name="download_pdf" string="Тайлан харах" type="object" class="btn-primary" icon="fa-download"/>
+                        <button string="Болих" class="btn-secondary" special="cancel" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for opening the Pay Residual PDF Report Wizard -->
+    <record id="action_pay_residual_pdf_report_wizard" model="ir.actions.act_window">
+        <field name="name">Үлдэгдлийн товч тайлан</field>
+        <field name="res_model">pay.residual.pdf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <!-- Directly reference the view record to ensure proper loading -->
+        <field name="view_id" ref="view_pay_residual_pdf_report_wizard_form"/>
+    </record>
+
+    <!-- Action for generating the Pay Residual PDF Report -->
+    <record id="action_pay_residual_pdf_report" model="ir.actions.report">
+        <field name="name">Үлдэгдлийн товч тайлан</field>
+        <field name="model">pay.residual.pdf.report.wizard</field>
+        <!-- Use PDF as the default report type to directly generate PDF reports -->
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.template_pay_residual_pdf_report</field>
+        <!-- Improved print report name to display residual date properly -->
+        <field name="print_report_name">Үлдэгдлийн тайлан - %(residual_date)s</field>
+        <!-- Directly reference the paper format record to ensure proper loading -->
+        <field name="paperformat_id" ref="paperformat_custom_a4_landscape"/>
+    </record>
+</odoo>

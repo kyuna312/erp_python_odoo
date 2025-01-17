@@ -1,0 +1,44 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_heat_report_pdf_wizard_form" model="ir.ui.view">
+        <field name="name">heat.report.pdf.wizard.form</field>
+        <field name="model">heat.report.pdf.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Дулааны мэдээ хайлт" paper="a4-l">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="heat_report_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download" string="Тайлан харах" type="object" class="btn-primary"
+                                icon="fa-download"/>
+                        <button string="Болих" special="cancel" class="btn-secondary" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_heat_report_pdf_wizard" model="ir.actions.act_window">
+        <field name="name">Дулааны мэдээ хайлт</field>
+        <field name="res_model">heat.report.pdf.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_heat_report_pdf_wizard_form"/>
+    </record>
+
+    <!-- QWeb Template -->
+    <record id="action_heat_report_pdf" model="ir.actions.report">
+        <field name="name">Дулааны мэдээ хайлт</field>
+        <field name="model">heat.report.pdf.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ub_kontor.template_heat_report_pdf</field>
+        <field name="print_report_name">Тайлан - %(user_balance_list_date)s</field>
+    </record>
+</odoo>

@@ -1,0 +1,44 @@
+<odoo>
+    <record id="view_pay_residual_list_user_balance_report_wizard_form" model="ir.ui.view">
+        <field name="name">pay.residual.list.user.balance.report.wizard.form</field>
+        <field name="model">pay.residual.list.user.balance.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Үлдэгдэлтэй хэрэглэгчдийн жагсаалт (тоотоор)" paper="a4-l">
+                <sheet>
+                    <group>
+                        <field name="company_id"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="inspector_ids" widget="many2many_tags" placeholder="Байцаагч"/>
+                        </group>
+                        <group>
+                            <field name="user_balance_list_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="download" string="Тайлан харах" type="object" class="btn-primary"
+                                icon="fa-download"/>
+                        <button string="Болих" special="cancel" class="btn-secondary" icon="fa-times"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pay_residual_list_user_balance_report_wizard" model="ir.actions.act_window">
+        <field name="name">Үлдэгдэлтэй хэрэглэгчдийн жагсаалт (тоотоор)</field>
+        <field name="res_model">pay.residual.list.user.balance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_pay_residual_list_user_balance_report_wizard_form"/>
+    </record>
+
+    <record id="action_pay_residual_list_user_balance_report" model="ir.actions.report">
+        <field name="name">Үлдэгдэлтэй хэрэглэгчдийн жагсаалт (тоотоор)</field>
+        <field name="model">pay.residual.list.user.balance.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ub_kontor.template_pay_residual_user_list_balance</field>
+        <field name="print_report_name">Тайлан - %(user_balance_list_date)s</field>
+    </record>
+</odoo>

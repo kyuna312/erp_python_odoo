@@ -1,0 +1,134 @@
+<odoo>
+  <template id="template_water_usage_list">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4; margin: 10mm; }
+        .table, .sub-table { width: 100%; border-collapse: collapse; font-size: 8px; }
+        .table th, .table td, .sub-table th, .sub-table td { padding: 3px; border: 1px solid #ddd; text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .dotted-line { border-bottom: 1px dotted black; width: 100px; display: inline-block; }
+        .header-info p, .signature-section p { margin: 0; }
+        .row-header p, .row-data p { margin-bottom: 1px; }
+        .inspector-row { background-color: #f5f5f5; font-weight: bold; }
+      </style>
+
+      <div class="page content">
+        <!-- Header Section -->
+        <div class="row pb-1">
+          <div class="col-6">
+            <t t-if="logo_data_uri">
+              <img t-att-src="logo_data_uri" class="logo"/>
+            </t>
+          </div>
+          <div class="col-6 text-end">
+            <p class="mb-0 fw-bold">
+              <t t-esc="company_name"/>-ын
+              <t t-esc="water_usage_date"/>
+              сарын Усны хэмжүүрийн заалтууд хайлт
+            </p>
+          </div>
+        </div>
+
+        <!-- Report Metadata -->
+        <div class="row pb-1 header-info">
+          <div class="col-4">
+            <p class="mb-0">Төрөл:
+              <t t-esc="address_type"/>
+            </p>
+          </div>
+          <div class="col-8 text-end">
+            <p class="mb-0">Тайлан гаргасан:
+              <t t-esc="report_date"/>
+            </p>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table">
+          <thead>
+            <tr class="inspector-row">
+              <th rowspan="2">Байр, тоот</th>
+              <th rowspan="2">Ам бүл</th>
+              <t t-foreach="header_data" t-as="header">
+                <th colspan="3" t-esc="header['display_name']"/>
+              </t>
+              <th rowspan="2">Нийт ус</th>
+            </tr>
+            <tr class="inspector-row">
+              <t t-foreach="header_data" t-as="header">
+                <th>Эхний заалт</th>
+                <th>Эцсийн заалт</th>
+                <th>Зөрүү</th>
+              </t>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="grouped_data.items()" t-as="line">
+              <tr>
+                <td>
+                  <t t-esc="line[1]['address_address']"/>
+                </td>
+                <td>
+                  <t t-esc="line[1]['family']"/>
+                </td>
+                <t t-foreach="header_data" t-as="header">
+                  <t t-call="ub_kontor.water_usage_table_row">
+                    <t t-set="counters" t-value="line[1]['counters']"/>
+                  </t>
+                </t>
+                <td>
+                  <t t-esc="line[1]['total_difference']" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+
+        <!-- Signature Section -->
+        <div class="row mt-3 text-end">
+          <div class="col-12">
+            <p>
+              <strong>Заалтуудыг уншсан:</strong>
+              <span class="dotted-line"></span>
+            </p>
+            <p>
+              <strong>Усны инженер:</strong>
+              <span class="dotted-line"></span>
+            </p>
+            <p>
+              <strong>Нягтлан бодогч:</strong>
+              <span class="dotted-line"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <!-- Row Helper Template -->
+  <template id="water_usage_table_row">
+    <td>
+      <t t-foreach="counters" t-as="counter">
+        <t t-if="counter['counter_name'] == header['counter_name']">
+          <t t-esc="counter['first_counter']"/>
+        </t>
+      </t>
+    </td>
+    <td>
+      <t t-foreach="counters" t-as="counter">
+        <t t-if="counter['counter_name'] == header['counter_name']">
+          <t t-esc="counter['last_counter']"/>
+        </t>
+      </t>
+    </td>
+    <td>
+      <t t-foreach="counters" t-as="counter">
+        <t t-if="counter['counter_name'] == header['counter_name']">
+          <t t-esc="counter['difference']"/>
+        </t>
+      </t>
+    </td>
+  </template>
+</odoo>

@@ -1,0 +1,128 @@
+<odoo>
+  <template id="template_pay_three_month_user_list_residual_pdf_report">
+    <t t-call="web.basic_layout">
+      <style>
+        @page { size: A4 landscape !important; margin: 20mm !important; }
+        body { font-family: Arial, sans-serif !important; font-size: 12px !important; }
+        .content { margin: 10px; }
+        .table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .table th, .table td { padding: 5px; border: 1px solid #ddd; word-wrap: break-word; }
+        .text-end { text-align: right; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .inspector-row { background-color: #f5f5f5; }
+        .header-section, .footer-section { margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .header-section p, .footer-section p { margin: 0; font-size: 13px; }
+        .dotted-line { border-bottom: 1px dotted black !important; display: inline-block !important; width: 150px
+        !important; }
+      </style>
+      <div class="content">
+        <!-- Header Section -->
+        <div class="header-section">
+          <t t-if="logo_data_uri">
+            <img t-att-src="logo_data_uri" style="width: 130px;"/>
+          </t>
+          <p class="fw-bold">
+            <t t-esc="company_name"/>
+            -<t t-esc="residual_date"/>-ны хэрэглэгчийн үлдэгдлийн товч тайлан
+          </p>
+        </div>
+        <div class="header-section">
+          <p>Төрөл:
+            <t t-esc="address_type"/>
+          </p>
+          <p>Тайлан гаргасан:
+            <t t-esc="date"/>
+          </p>
+        </div>
+
+        <!-- Table Section -->
+        <table class="table">
+          <thead class="inspector-row">
+            <tr>
+              <th>Байцаагч</th>
+              <th class="text-center">Байр</th>
+              <th class="text-center">Тоот</th>
+              <th>Хэрэглэгч</th>
+              <th>Төлбөл зохих</th>
+              <th>Үлдэгдэлтэй сарууд</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="grouped_data.values()" t-as="data">
+              <tr>
+                <td>
+                  <t t-esc="data['inspector_name']"/>
+                </td>
+                <td>
+                  <t t-foreach="data['apartment_codes']" t-as="code">
+                    <div>
+                      <t t-esc="code"/>
+                    </div>
+                  </t>
+                </td>
+                <td>
+                  <t t-foreach="data['address_addresses']" t-as="address">
+                    <div>
+                      <t t-esc="address"/>
+                    </div>
+                  </t>
+                </td>
+                <td class="text-center">
+                  <t t-foreach="data['address_names']" t-as="address_name">
+                    <div>
+                      <t t-esc="address_name"/>
+                    </div>
+                  </t>
+                </td>
+                <td class="text-end">
+                  <t t-set="total_residual"
+                     t-value="sum(float(r) for r in data['residual'] if isinstance(r, (int, float)) or (isinstance(r, str) and r.replace('.', '', 1).isdigit()))"/>
+                  <t t-foreach="data['residual']" t-as="residual">
+                    <div>
+                      <t t-esc="residual"/>
+                    </div>
+                  </t>
+                  <div class="fw-bold">Нийт:
+                    <t t-esc="total_residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                  </div>
+                </td>
+                <td class="text-start">
+                  <t t-foreach="data['invoice_names'].items()" t-as="invoice">
+                    <div><t t-esc="invoice[0][0]"/>-<t t-esc="invoice[0][1]"/>:
+                      <t t-esc="invoice[1]"/>
+                    </div>
+                  </t>
+                </td>
+              </tr>
+            </t>
+
+            <!-- Totals Row -->
+            <tr>
+              <td colspan="4" class="fw-bold text-end">Нийт:</td>
+              <td class="fw-bold text-end">
+                <t t-esc="sum(sum(float(r) for r in d['residual'] if isinstance(r, (int, float)) or (isinstance(r, str) and r.replace('.', '', 1).isdigit())) for d in grouped_data.values())"
+                   t-options="{'widget': 'float', 'precision': 2}"/>
+              </td>
+              <td class="fw-bold text-start">
+                <t t-esc="sum(sum(len(names.split(', ')) for names in d['invoice_names'].values()) for d in grouped_data.values())"/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+          <p>
+            <strong>Тайлан гаргасан:</strong>
+            <span class="dotted-line"/>
+          </p>
+          <p>
+            <strong>Хянасан:</strong>
+            <span class="dotted-line"/>
+          </p>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>

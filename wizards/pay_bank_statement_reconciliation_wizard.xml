@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pay_bank_statement_reconciliation_wizard_form" model="ir.ui.view">
+            <field name="name">pay.bank.statement.reconciliation.wizard.form</field>
+            <field name="model">pay.bank.statement.reconciliation.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="statement_id"/>
+                        </group>
+                        <group>
+                            <widget name="ub_kontor.pay_bank_statement_reconciliation_widget"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

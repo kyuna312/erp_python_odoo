@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="ref_address_change_services_form_view">
+            <field name="name">ref.address.change.services.wizard.form</field>
+            <field name="model">ref.address.change.services.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Үйлчилгээ өөрчлөх">
+                    <sheet>
+                        <group>
+                            <group>
+<!--                                <field name="apartment_ids"/>-->
+<!--                                <field name="address_ids"/>-->
+                                <field name="pure_water"/>
+                                <field name="impure_water"/>
+                                <field name="heating"/>
+                            </group>
+                            <group>
+
+                                <field name="proof"/>
+                                <field name="heating_water_fee"/>
+                                <field name="mineral_water"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="change_services" type="object" class="btn-primary" string="Өөрчлөх"/>
+                         <button string="Цуцлах" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
